@@ -1,0 +1,7 @@
+<Project>
+    <PropertyGroup>
+
+        <!-- All Prism packages -->
+        <PrismPackageVersion>1.1.4</PrismPackageVersion>
+    </PropertyGroup>
+</Project>
