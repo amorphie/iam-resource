@@ -11,7 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BBT.Prism.EntityFrameworkCore.Sqlite" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkPackageVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="EntityFrameworkCore\Applications\" />

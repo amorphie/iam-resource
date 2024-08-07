@@ -8,5 +8,11 @@ internal class RoleMapProfile : Profile
     {
         CreateMap<RoleDefinitionTranslation, RoleDefinitionTranslationDto>();
         CreateMap<RoleDefinition, RoleDefinitionDto>();
+
+        CreateMap<RoleGroupTranslation, RoleGroupTranslationDto>();
+        CreateMap<RoleGroup, RoleGroupDto>();
+        
+        CreateMap<RoleTranslation, RoleTranslationDto>();
+        CreateMap<Role, RoleDto>();
     }
 }

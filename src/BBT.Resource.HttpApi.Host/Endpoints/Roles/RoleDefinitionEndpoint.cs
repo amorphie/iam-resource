@@ -14,13 +14,13 @@ public class RoleDefinitionEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         var group = app
-            .MapGroup("roleDefinitions")
+            .MapGroup("role-definitions")
             .WithTags("RoleDefinitions")
             .MapToApiVersion(1);
 
         group.MapGet("/", async (
                 [FromServices] IRoleDefinitionAppService appService,
-                [FromBody] PagedRoleDefinitionInput input,
+                [AsParameters] PagedRoleDefinitionInput input,
                 CancellationToken cancellationToken
             ) => await appService.GetAllAsync(input, cancellationToken)
         );

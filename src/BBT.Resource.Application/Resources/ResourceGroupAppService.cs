@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Dynamic.Core;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BBT.Prism.Application.Dtos;
 using BBT.Prism.Application.Services;
+using BBT.Prism.Domain.Repositories;
 using BBT.Prism.Uow;
 
 namespace BBT.Resource.Resources;
@@ -11,19 +13,31 @@ namespace BBT.Resource.Resources;
 public class ResourceGroupAppService(
     IServiceProvider serviceProvider,
     IUnitOfWork unitOfWork,
-    IResourceGroupRepository resourceGroupRepository)
+    IResourceGroupRepository resourceGroupRepository,
+    MultiLingualResourceGroupObjectMapper multiLingualMapper)
     : ApplicationService(serviceProvider), IResourceGroupAppService
 {
-    public Task<PagedResult<ResourceGroupDto>> GetAllAsync(PagedResourceGroupInput input,
+    public async Task<PagedResultDto<ResourceGroupMultiLingualDto>> GetAllAsync(PagedResourceGroupInput input,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var totalCount = await resourceGroupRepository.LongCountAsync(cancellationToken);
+        var items = await resourceGroupRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount,
+            input.Sorting, true, cancellationToken);
+
+        var roleDefDtos = items.Select(multiLingualMapper.Map)
+            .ToList();
+
+        return new PagedResultDto<ResourceGroupMultiLingualDto>
+        {
+            TotalCount = totalCount,
+            Items = roleDefDtos
+        };
     }
 
-    public async Task<ResourceGroupDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<ResourceGroupMultiLingualDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var resourceGroup = await resourceGroupRepository.GetAsync(id, true, cancellationToken);
-        return ObjectMapper.Map<ResourceGroup, ResourceGroupDto>(resourceGroup);
+        return multiLingualMapper.Map(resourceGroup);
     }
 
     public async Task<ResourceGroupDto> CreateAsync(CreateResourceGroupInput input,
@@ -49,8 +63,8 @@ public class ResourceGroupAppService(
     {
         var resourceGroup = await resourceGroupRepository.GetAsync(id, true, cancellationToken);
         resourceGroup.Tags = input.Tags;
-        resourceGroup.Status = input.Status;
-        
+        resourceGroup.ChangeStatus(input.Status);
+
         foreach (var translation in input.Translations)
         {
             resourceGroup.AddTranslation(translation.Language, translation.Name);

@@ -12,25 +12,25 @@
     <ProjectReference Include="..\..\src\BBT.Resource.EntityFrameworkCore\BBT.Resource.EntityFrameworkCore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Http" />
-    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
+    <PackageReference Include="Asp.Versioning.Http" Version="$(AspVersioningPackageVersion)" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="$(AspVersioningPackageVersion)" />
     <PackageReference Include="BBT.Prism.AspNetCore" Version="$(PrismPackageVersion)" />
     <PackageReference Include="BBT.Prism.AspNetCore.Dapr.EventBus" Version="$(PrismPackageVersion)" />
     <PackageReference Include="BBT.Prism.AspNetCore.HealthChecks" Version="$(PrismPackageVersion)" />
     <PackageReference Include="BBT.Prism.AspNetCore.HealthChecks.Dapr" Version="$(PrismPackageVersion)" />
     <PackageReference Include="BBT.Prism.AspNetCore.Serilog" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-    <PackageReference Include="Dapr.Extensions.Configuration" />
-    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
-    <PackageReference Include="OpenTelemetry" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-    <PackageReference Include="OpenTelemetry.Exporter.Console" />
-    <PackageReference Include="Elastic.Apm.NetCoreAll" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="$(SwashbucklePackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(OpenApiPackageVersion)" />
+    <PackageReference Include="Dapr.Extensions.Configuration" Version="$(DaprPackageVersion)" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.0" />
+    <PackageReference Include="OpenTelemetry" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="$(OpenTelemetryPackageVersion)" />
+    <PackageReference Include="Elastic.Apm.NetCoreAll" Version="$(ElasticApmPackageVersion)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Logs\**" />

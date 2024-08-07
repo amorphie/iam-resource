@@ -1,3 +1,5 @@
+using System;
+using BBT.Prism.Domain.EntityFrameworkCore;
 using BBT.Resource.Data;
 using BBT.Prism.EntityFrameworkCore;
 using BBT.Prism.Modularity;
@@ -15,6 +17,11 @@ namespace BBT.Resource.EntityFrameworkCore;
 )]
 public class ResourceEntityFrameworkCoreModule : PrismModule
 {
+    public override void PreConfigureServices(ModuleConfigurationContext context)
+    {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+    }
+
     public override void ConfigureServices(ModuleConfigurationContext context)
     {
         var configuration = context.Services.GetConfiguration();
@@ -29,5 +36,6 @@ public class ResourceEntityFrameworkCoreModule : PrismModule
         context.Services.AddTransient<IPrivilegeRepository, EfCorePrivilegeRepository>();
         context.Services.AddTransient<IRoleDefinitionRepository, EfCoreRoleDefinitionRepository>();
         context.Services.AddTransient<IRoleGroupRepository, EfCoreRoleGroupRepository>();
+        context.Services.AddTransient<IRoleRepository, EfCoreRoleRepository>();
     }
 }

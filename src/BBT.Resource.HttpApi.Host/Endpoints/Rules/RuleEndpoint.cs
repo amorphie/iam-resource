@@ -20,7 +20,7 @@ public class RuleEndpoint : IEndpoint
         
         group.MapGet("/", async (
                 [FromServices] IRuleAppService appService,
-                [FromBody] PagedRuleInput input,
+                [AsParameters] PagedRuleInput input,
                 CancellationToken cancellationToken
             ) => await appService.GetAllAsync(input, cancellationToken)
         );

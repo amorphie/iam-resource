@@ -11,5 +11,6 @@
   <ItemGroup>
     <PackageReference Include="BBT.Prism.Data.Seeding" Version="$(PrismPackageVersion)" />
     <PackageReference Include="BBT.Prism.Ddd.Domain" Version="$(PrismPackageVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)" />
   </ItemGroup>
 </Project>

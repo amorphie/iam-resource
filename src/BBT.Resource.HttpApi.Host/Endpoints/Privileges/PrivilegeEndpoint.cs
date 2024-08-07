@@ -20,7 +20,7 @@ public class PrivilegeEndpoint: IEndpoint
         
         group.MapGet("/", async (
                 [FromServices] IPrivilegeAppService appService,
-                [FromBody] PagedPrivilegeInput input,
+                [AsParameters] PagedPrivilegeInput input,
                 CancellationToken cancellationToken
             ) => await appService.GetAllAsync(input, cancellationToken)
         );

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Asp.Versioning;
@@ -17,6 +18,7 @@ using BBT.Prism.AspNetCore.Serilog;
 using BBT.Prism.EventBus.Dapr;
 using BBT.Prism.Modularity;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -165,6 +167,16 @@ public class ResourceHttpApiHostModule : PrismModule
         app.UseSecurityHeaders();
         app.UseCurrentUser();
         app.UseStaticFiles();
+        
+        var supportedCultures = new[] { "en-US", "tr-TR" };
+        var localizationOptions = new RequestLocalizationOptions()
+        {
+            DefaultRequestCulture = new RequestCulture("en-US"),
+            SupportedCultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
+            SupportedUICultures = supportedCultures.Select(c => new CultureInfo(c)).ToList()
+        };
+        app.UseRequestLocalization(localizationOptions);
+        
         app.UseRouting();
         app.UseCors();
         // app.UseHttpMetrics();
@@ -177,7 +189,7 @@ public class ResourceHttpApiHostModule : PrismModule
         app.UseAppSwagger();
     }
 
-    public async override Task OnPostApplicationInitializationAsync(ApplicationInitializationContext context)
+    public override async Task OnPostApplicationInitializationAsync(ApplicationInitializationContext context)
     {
         if (!context.GetEnvironment().IsProduction())
         {

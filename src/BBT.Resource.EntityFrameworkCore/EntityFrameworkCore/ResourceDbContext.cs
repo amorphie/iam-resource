@@ -19,7 +19,6 @@ public class ResourceDbContext(
     public virtual DbSet<Resources.Resource> Resources { get; set; }
     public virtual DbSet<ResourceTranslation> ResourceTranslations { get; set; }
     public virtual DbSet<Rule> Rules { get; set; }
-    public virtual DbSet<ResourceRole> ResourceRoles { get; set; }
     public virtual DbSet<ResourceRule> ResourceRules { get; set; }
     public virtual DbSet<Privilege> Privileges { get; set; }
     public virtual DbSet<ResourcePrivilege> ResourcePrivileges { get; set; }
@@ -30,6 +29,7 @@ public class ResourceDbContext(
     public virtual DbSet<RoleGroupTranslation> RoleGroupTranslations { get; set; }
     public virtual DbSet<Role> Roles { get; set; }
     public virtual DbSet<RoleTranslation> RoleTranslations { get; set; }
+    public virtual DbSet<RoleGroupRole> RoleGroupRoles { get; set; }
     public virtual DbSet<Scope> Scopes { get; set; }
     public virtual DbSet<ScopeTranslation> ScopeTranslations { get; set; }
 
@@ -37,7 +37,7 @@ public class ResourceDbContext(
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
+        
         builder.ConfigureResource();
     }
 }

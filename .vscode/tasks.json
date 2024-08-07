@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-Resource",
+            "label": "build-resource",
             "dependsOn": "init-mocks",
             "command": "dotnet",
             "type": "process",
@@ -19,16 +19,16 @@
             "appPort": 4200,
             "httpPort": 42010,
             "grpcPort": 42011,
-            "label": "dapr-debug-Resource",
+            "label": "dapr-debug-resource",
             "type": "dapr",
-            "dependsOn": "build-Resource",
+            "dependsOn": "build-myprojectname",
             "componentsPath": "./etc/Dapr/Components"
         },
         {
             "appId": "Resource",
-            "label": "daprd-down-Resource",
+            "label": "daprd-down-resource",
             "type": "daprd-down",
-            "dependsOn": "stop-mocks",
+            "dependsOn": "stop-mocks"
         }
     ]
 }

@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BBT.Prism.Application.Dtos;
 using BBT.Prism.Application.Services;
+using BBT.Prism.Domain.Repositories;
 using BBT.Prism.Uow;
 
 namespace BBT.Resource.Privileges;
@@ -13,15 +15,18 @@ public class PrivilegeAppService(
     IPrivilegeRepository privilegeRepository)
     : ApplicationService(serviceProvider), IPrivilegeAppService
 {
-    public Task<PagedResultDto<PrivilegeDto>> GetAllAsync(PagedPrivilegeInput input,
+    public async Task<PagedResultDto<PrivilegeDto>> GetAllAsync(PagedPrivilegeInput input,
         CancellationToken cancellationToken = default)
     {
-        /*
-         * NextPage var mantığı. ..
-         *
-         * 
-         */
-        throw new NotImplementedException();
+        var totalCount = await privilegeRepository.LongCountAsync(cancellationToken);
+        var items = await privilegeRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount,
+            input.Sorting, true, cancellationToken);
+
+        return new PagedResultDto<PrivilegeDto>
+        {
+            TotalCount = totalCount,
+            Items = ObjectMapper.Map<List<Privilege>, List<PrivilegeDto>>(items)
+        };
     }
 
     public async Task<PrivilegeDto> GetAsync(Guid id, CancellationToken cancellationToken = default)

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Dynamic.Core;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BBT.Prism.Application.Dtos;
 using BBT.Prism.Application.Services;
+using BBT.Prism.Domain.Repositories;
 using BBT.Prism.Uow;
 
 namespace BBT.Resource.Roles;
@@ -11,19 +13,31 @@ namespace BBT.Resource.Roles;
 public class RoleDefinitionAppService(
     IServiceProvider serviceProvider,
     IUnitOfWork unitOfWork,
-    IRoleDefinitionRepository roleDefinitionRepository)
+    IRoleDefinitionRepository roleDefinitionRepository,
+    MultiLingualRoleDefinitionObjectMapper multiLingualMapper)
     : ApplicationService(serviceProvider), IRoleDefinitionAppService
 {
-    public Task<PagedResult<RoleDefinitionDto>> GetAllAsync(PagedRoleDefinitionInput input,
+    public async Task<PagedResultDto<RoleDefinitionMultiLingualDto>> GetAllAsync(PagedRoleDefinitionInput input,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var totalCount = await roleDefinitionRepository.LongCountAsync(cancellationToken);
+        var items = await roleDefinitionRepository.GetPagedListAsync(input.SkipCount, input.MaxResultCount,
+            input.Sorting, true, cancellationToken);
+
+        var roleDefDtos = items.Select(multiLingualMapper.Map)
+            .ToList();
+
+        return new PagedResultDto<RoleDefinitionMultiLingualDto>
+        {
+            TotalCount = totalCount,
+            Items = roleDefDtos
+        };
     }
 
-    public async Task<RoleDefinitionDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<RoleDefinitionMultiLingualDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var roleDefinition = await roleDefinitionRepository.GetAsync(id, true, cancellationToken);
-        return ObjectMapper.Map<RoleDefinition, RoleDefinitionDto>(roleDefinition);
+        return multiLingualMapper.Map(roleDefinition);
     }
 
     public async Task<RoleDefinitionDto> CreateAsync(CreateRoleDefinitionInput input,
@@ -52,15 +66,14 @@ public class RoleDefinitionAppService(
     {
         var roleDefinition = await roleDefinitionRepository.GetAsync(id, true, cancellationToken);
         roleDefinition.SetKey(input.Key);
-        roleDefinition.ClientId = input.ClientId;
         roleDefinition.Tags = input.Tags;
-        roleDefinition.Status = input.Status;
+        roleDefinition.ChangeStatus(input.Status);
 
         foreach (var translation in input.Translations)
         {
             roleDefinition.AddTranslation(translation.Language, translation.Name, translation.Description);
         }
-        
+
         var translationsToRemove = new List<RoleDefinitionTranslation>();
         foreach (var translation in roleDefinition.Translations)
         {

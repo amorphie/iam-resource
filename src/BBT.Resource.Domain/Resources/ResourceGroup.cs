@@ -10,7 +10,7 @@ namespace BBT.Resource.Resources;
 public class ResourceGroup : AuditedEntity<Guid>, IMultiLingualEntity<ResourceGroupTranslation>
 {
     public string[]? Tags { get; set; }
-    public Status Status { get; set; }
+    public Status Status { get; private set; }
     public ICollection<ResourceGroupTranslation> Translations { get; set; }
 
     private ResourceGroup()
@@ -25,6 +25,11 @@ public class ResourceGroup : AuditedEntity<Guid>, IMultiLingualEntity<ResourceGr
         Status = Status.Active;
         Translations = new Collection<ResourceGroupTranslation>();
     }
+    
+    public void ChangeStatus(string status)
+    {
+        Status = Status.FromCode(status);
+    }
 
     public void AddTranslation(string language, string name)
     {
@@ -35,7 +40,7 @@ public class ResourceGroup : AuditedEntity<Guid>, IMultiLingualEntity<ResourceGr
         else
         {
             var translation = Translations.First(p => p.Language == language);
-            translation.Name = name;
+            translation.SetName(name);
         }
     }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using BBT.Prism;
 using BBT.Prism.Domain.Entities.Auditing;
@@ -7,15 +8,12 @@ using BBT.Prism.MultiLingualEntities;
 
 namespace BBT.Resource.Roles;
 
-public class RoleDefinition : AuditedEntity<Guid>,  IMultiLingualEntity<RoleDefinitionTranslation>
+public class RoleDefinition : AuditedEntity<Guid>, IMultiLingualEntity<RoleDefinitionTranslation>
 {
     public string Key { get; private set; }
-    public Guid ClientId { get; set; }
-    public string[]? Tags { get; set; }
-    public Status Status { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-    public DateTime? ModifiedAt { get; set; }
+    public Guid ClientId { get; private set; }
+    public string[]? Tags { get; set; } = [];
+    public Status Status { get; private set; }
     public ICollection<RoleDefinitionTranslation> Translations { get; set; }
 
     private RoleDefinition()
@@ -32,6 +30,13 @@ public class RoleDefinition : AuditedEntity<Guid>,  IMultiLingualEntity<RoleDefi
         Key = Check.NotNullOrEmpty(key, nameof(Key), RoleDefinitionConsts.MaxKeyLength);
         ClientId = clientId;
         Status = Status.Active;
+
+        Translations = new Collection<RoleDefinitionTranslation>();
+    }
+    
+    public void ChangeStatus(string status)
+    {
+        Status = Status.FromCode(status);
     }
 
     public void SetKey(string key)
@@ -48,8 +53,8 @@ public class RoleDefinition : AuditedEntity<Guid>,  IMultiLingualEntity<RoleDefi
         else
         {
             var translation = Translations.First(p => p.Language == language);
-            translation.Name = name;
-            translation.Description = description;
+            translation.SetName(name);
+            translation.SetDescription(description);
         }
     }
 

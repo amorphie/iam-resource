@@ -1,5 +1,6 @@
 using BBT.Prism.Application;
 using BBT.Prism.AutoMapper;
+using BBT.Prism.Mapper;
 using BBT.Prism.Modularity;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
@@ -21,10 +22,18 @@ public class ResourceApplicationModule : PrismModule
     {
         Configure<PrismAutoMapperOptions>(options => { options.AddMaps<ResourceApplicationModule>(validate: true); });
 
+        context.Services.AddTransient<MultiLingualRoleDefinitionObjectMapper>();
+        context.Services.AddTransient<MultiLingualResourceGroupObjectMapper>();
+        context.Services.AddTransient<MultiLingualRoleGroupObjectMapper>();
+        context.Services.AddTransient<MultiLingualRoleObjectMapper>();
+        context.Services.AddTransient<MultiLingualResourceObjectMapper>();
+
         context.Services.AddTransient<IResourceGroupAppService, ResourceGroupAppService>();
         context.Services.AddTransient<IResourceAppService, ResourceAppService>();
         context.Services.AddTransient<IRuleAppService, RuleAppService>();
         context.Services.AddTransient<IPrivilegeAppService, PrivilegeAppService>();
         context.Services.AddTransient<IRoleDefinitionAppService, RoleDefinitionAppService>();
+        context.Services.AddTransient<IRoleGroupAppService, RoleGroupAppService>();
+        context.Services.AddTransient<IRoleAppService, RoleAppService>();
     }
 }

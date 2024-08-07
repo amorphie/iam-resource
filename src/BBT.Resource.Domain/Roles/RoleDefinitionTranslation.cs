@@ -10,8 +10,8 @@ public class RoleDefinitionTranslation : Entity, IEntityTranslation
 {
     public Guid DefinitionId { get; set; }
     public string Language { get; set; }
-    public string Name { get; set; }
-    public string? Description { get; set; }
+    public string Name { get; private set; }
+    public string? Description { get; private set; }
 
     public override object?[] GetKeys()
     {
@@ -23,11 +23,21 @@ public class RoleDefinitionTranslation : Entity, IEntityTranslation
         //For Orm
     }
 
-    internal RoleDefinitionTranslation(Guid definition, string language, string name, string? description)
+    internal RoleDefinitionTranslation(Guid definitionId, string language, string name, string? description)
     {
-        DefinitionId = definition;
+        DefinitionId = definitionId;
         Language = Check.NotNullOrEmpty(language, nameof(Language), SharedConsts.MaxLanguageLength);
+        SetName(name);
+        SetDescription(description);
+    }
+
+    internal void SetName(string name)
+    {
         Name = Check.NotNullOrEmpty(name, nameof(Name), RoleDefinitionConsts.MaxNameLength);
+    }
+    
+    internal void SetDescription(string? description)
+    {
         Description = Check.Length(description, nameof(Description), RoleDefinitionConsts.MaxDescriptionLength);
     }
 }

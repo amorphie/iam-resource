@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using BBT.Prism.DependencyInjection;
 using BBT.Prism.Timing;
@@ -12,6 +13,7 @@ public class ResourceDbContextFactory: IDesignTimeDbContextFactory<ResourceDbCon
 {
     public ResourceDbContext CreateDbContext(string[] args)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         // Only design context
         var services = new ServiceCollection();
         services.AddOptions();

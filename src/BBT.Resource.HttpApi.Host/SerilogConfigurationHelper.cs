@@ -14,12 +14,16 @@ public static class SerilogConfigurationHelper
             .AddEnvironmentVariables()
             .Build();
 
+        var debugMode = false;
+#if DEBUG
+        debugMode = true;
+#endif
         var builder = new SerilogConfigurationBuilder(applicationName, configuration)
-            .AddDefaultConfiguration();
+            .AddDefaultConfiguration(debugMode);
 
         // Enable Open Telemetry
         builder.AddOpenTelemetry();
-        
+
         // Example of adding a custom enricher
         // builder.AddEnrichment(new CustomEnricher());
 

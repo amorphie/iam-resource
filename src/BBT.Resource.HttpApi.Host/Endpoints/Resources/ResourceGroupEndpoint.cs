@@ -14,13 +14,13 @@ public class ResourceGroupEndpoint : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         var group = app
-            .MapGroup("resourceGroups")
+            .MapGroup("resource-groups")
             .WithTags("ResourceGroups")
             .MapToApiVersion(1);
 
         group.MapGet("/", async (
                 [FromServices] IResourceGroupAppService appService,
-                [FromBody] PagedResourceGroupInput input,
+                [AsParameters] PagedResourceGroupInput input,
                 CancellationToken cancellationToken
             ) => await appService.GetAllAsync(input, cancellationToken)
         );

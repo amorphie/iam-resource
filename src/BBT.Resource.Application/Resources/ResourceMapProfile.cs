@@ -8,5 +8,8 @@ internal class ResourceMapProfile : Profile
     {
         CreateMap<ResourceGroupTranslation, ResourceGroupTranslationDto>();
         CreateMap<ResourceGroup, ResourceGroupDto>();
+        
+        CreateMap<ResourceTranslation, ResourceTranslationDto>();
+        CreateMap<Resource, ResourceDto>();
     }
 }

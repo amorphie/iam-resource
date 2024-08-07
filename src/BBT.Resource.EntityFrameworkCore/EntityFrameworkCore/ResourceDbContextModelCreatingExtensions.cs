@@ -1,4 +1,5 @@
 using BBT.Prism.EntityFrameworkCore.Modeling;
+using BBT.Resource.EntityFrameworkCore.ValueConverters;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
 using BBT.Resource.Roles;
@@ -21,6 +22,11 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("ResourceGroups");
             b.ConfigureByConvention();
 
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
+
             b.HasMany(p => p.Translations)
                 .WithOne()
                 .HasForeignKey(p => p.GroupId);
@@ -32,8 +38,13 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ConfigureByConvention();
             b.HasKey(k => new { k.Language, k.GroupId });
 
-            b.Property(p => p.Language).IsRequired().HasMaxLength(SharedConsts.MaxLanguageLength);
-            b.Property(p => p.Name).IsRequired().HasMaxLength(ResourceGroupConsts.MaxNameLength);
+            b.Property(p => p.Language)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxLanguageLength);
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(ResourceGroupConsts.MaxNameLength);
         });
 
         builder.Entity<Resources.Resource>(b =>
@@ -41,14 +52,18 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("Resources");
             b.ConfigureByConvention();
 
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
-            b.Property(p => p.Url).IsRequired().HasMaxLength(ResourceConsts.MaxUrlLength);
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
+
+            b.Property(p => p.Url)
+                .IsRequired()
+                .HasMaxLength(ResourceConsts.MaxUrlLength);
+
+            b.HasIndex(i => new { i.Url, i.Type }).IsUnique();
 
             b.HasMany(p => p.Translations)
-                .WithOne()
-                .HasForeignKey(p => p.ResourceId);
-
-            b.HasMany(p => p.Roles)
                 .WithOne()
                 .HasForeignKey(p => p.ResourceId);
 
@@ -77,22 +92,17 @@ public static class ResourceDbContextModelCreatingExtensions
             b.Property(p => p.Description).HasMaxLength(ResourceConsts.MaxDescriptionLength);
         });
 
-        builder.Entity<ResourceRole>(b =>
-        {
-            b.ToTable("ResourceRoles");
-            b.ConfigureByConvention();
-
-            b.HasKey(k => new { k.ResourceId, k.RoleId, k.Status });
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
-        });
-
         builder.Entity<ResourceRule>(b =>
         {
             b.ToTable("ResourceRules");
             b.ConfigureByConvention();
 
-            b.HasKey(k => new { k.ResourceId, k.RuleId, k.ClientId, k.Status });
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
+            //TODO: ClientId is currently nullable, so it is not added to the index.
+            b.HasKey(k => new { k.ResourceId, k.RuleId });
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
         });
 
         builder.Entity<ResourcePrivilege>(b =>
@@ -100,8 +110,12 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("ResourcePrivileges");
             b.ConfigureByConvention();
 
-            b.HasKey(k => new { k.ResourceId, k.Priority, k.ClientId, k.Status });
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
+            //TODO: ClientId is currently nullable, so it is not added to the index.
+            b.HasKey(k => new { k.ResourceId, k.Priority });
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
         });
 
         #endregion
@@ -113,7 +127,9 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("Privileges");
             b.ConfigureByConvention();
 
-            b.Property(p => p.Url).IsRequired().HasMaxLength(PrivilegeConsts.MaxUrlLength);
+            b.Property(p => p.Url)
+                .IsRequired()
+                .HasMaxLength(PrivilegeConsts.MaxUrlLength);
 
             b.HasMany<ResourcePrivilege>()
                 .WithOne()
@@ -129,7 +145,9 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("Rules");
             b.ConfigureByConvention();
 
-            b.Property(p => p.Name).IsRequired().HasMaxLength(RuleConsts.MaxNameLength);
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(RuleConsts.MaxNameLength);
 
             b.HasMany<ResourceRule>()
                 .WithOne()
@@ -145,12 +163,23 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("RoleDefinitions");
             b.ConfigureByConvention();
 
-            b.Property(p => p.Key).IsRequired().HasMaxLength(RoleDefinitionConsts.MaxKeyLength);
-            b.Property(p => p.ClientId).IsRequired();
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
+            b.Property(p => p.Key)
+                .IsRequired()
+                .HasMaxLength(RoleDefinitionConsts.MaxKeyLength);
 
-            b.HasIndex(i => new { i.Key, i.ClientId, i.Status }).IsUnique();
-            
+            b.Property(p => p.ClientId)
+                .IsRequired();
+
+            b.Property(p => p.Tags);
+
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
+
+            b.HasIndex(i => new { i.Key, i.ClientId })
+                .IsUnique();
+
             b.HasMany(p => p.Translations)
                 .WithOne()
                 .HasForeignKey(p => p.DefinitionId);
@@ -167,9 +196,16 @@ public static class ResourceDbContextModelCreatingExtensions
 
             b.HasKey(k => new { k.Language, k.DefinitionId });
 
-            b.Property(p => p.Language).IsRequired().HasMaxLength(SharedConsts.MaxLanguageLength);
-            b.Property(p => p.Name).IsRequired().HasMaxLength(RoleDefinitionConsts.MaxNameLength);
-            b.Property(p => p.Description).HasMaxLength(RoleDefinitionConsts.MaxNameLength);
+            b.Property(p => p.Language)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxLanguageLength);
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(RoleDefinitionConsts.MaxNameLength);
+
+            b.Property(p => p.Description)
+                .HasMaxLength(RoleDefinitionConsts.MaxNameLength);
         });
 
         builder.Entity<RoleGroup>(b =>
@@ -177,7 +213,10 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("RoleGroups");
             b.ConfigureByConvention();
 
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
 
             b.HasMany(p => p.Translations)
                 .WithOne()
@@ -187,7 +226,7 @@ public static class ResourceDbContextModelCreatingExtensions
                 .WithOne()
                 .HasForeignKey(p => p.GroupId);
 
-            b.HasMany(p => p.Scopes)
+            b.HasMany<Scope>()
                 .WithOne()
                 .HasForeignKey(p => p.GroupId);
         });
@@ -199,8 +238,13 @@ public static class ResourceDbContextModelCreatingExtensions
 
             b.HasKey(k => new { k.Language, k.GroupId });
 
-            b.Property(p => p.Language).IsRequired().HasMaxLength(SharedConsts.MaxLanguageLength);
-            b.Property(p => p.Name).IsRequired().HasMaxLength(RoleGroupConsts.MaxNameLength);
+            b.Property(p => p.Language)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxLanguageLength);
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(RoleGroupConsts.MaxNameLength);
         });
 
         builder.Entity<Role>(b =>
@@ -208,17 +252,16 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("Roles");
             b.ConfigureByConvention();
 
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
 
             b.HasMany(p => p.Translations)
                 .WithOne()
                 .HasForeignKey(p => p.RoleId);
 
             b.HasMany<RoleGroupRole>()
-                .WithOne()
-                .HasForeignKey(p => p.RoleId);
-
-            b.HasMany<ResourceRole>()
                 .WithOne()
                 .HasForeignKey(p => p.RoleId);
         });
@@ -230,17 +273,25 @@ public static class ResourceDbContextModelCreatingExtensions
 
             b.HasKey(k => new { k.Language, k.RoleId });
 
-            b.Property(p => p.Language).IsRequired().HasMaxLength(SharedConsts.MaxLanguageLength);
-            b.Property(p => p.Name).IsRequired().HasMaxLength(RoleConsts.MaxNameLength);
+            b.Property(p => p.Language)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxLanguageLength);
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(RoleConsts.MaxNameLength);
         });
 
         builder.Entity<RoleGroupRole>(b =>
         {
             b.ToTable("RoleGroupRoles");
             b.ConfigureByConvention();
-            b.HasKey(k => new { k.GroupId, k.RoleId, k.Status });
+            b.HasKey(k => new { k.GroupId, k.RoleId });
 
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
         });
 
         builder.Entity<Scope>(b =>
@@ -248,8 +299,29 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ToTable("Scopes");
             b.ConfigureByConvention();
 
-            b.Property(p => p.Reference).HasMaxLength(ScopeConsts.MaxReferenceLength);
-            b.Property(p => p.Status).IsRequired().HasMaxLength(SharedConsts.MaxStatusLength);
+            b.Property(p => p.Reference)
+                .HasMaxLength(ScopeConsts.MaxReferenceLength);
+
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
+        });
+
+        builder.Entity<ScopeTranslation>(b =>
+        {
+            b.ToTable("ScopeTranslations");
+            b.ConfigureByConvention();
+
+            b.HasKey(k => new { k.Language, k.ScopeId });
+
+            b.Property(p => p.Language)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxLanguageLength);
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(RoleConsts.MaxNameLength);
         });
 
         #endregion
