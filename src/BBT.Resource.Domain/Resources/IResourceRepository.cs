@@ -15,4 +15,6 @@ public interface IResourceRepository : IRepository<Resource, Guid>
     Task<List<ResourcePrivilegeModel>> GetPrivilegesAsync(Guid resourceId, CancellationToken cancellationToken = default);
     Task<ResourcePrivilegeModel> GetPrivilegeAsync(Guid resourceId, Guid privilegeId,
         CancellationToken cancellationToken = default);
+
+    Task<Resource?> FindByRegexAsync(string url, ResourceType type, CancellationToken cancellationToken = default);
 }

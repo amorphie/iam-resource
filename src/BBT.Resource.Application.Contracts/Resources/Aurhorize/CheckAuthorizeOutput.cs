@@ -1,6 +1,7 @@
 namespace BBT.Resource.Resources;
 
-public class CheckAuthorizeOutput
+public class CheckAuthorizeOutput(int statusCode, string reason)
 {
-    public string Reason { get; set; }
+    public string Reason { get; } = reason;
+    public int StatusCode { get; } = statusCode;
 }

@@ -4,6 +4,7 @@ using BBT.Prism.Mapper;
 using BBT.Prism.Modularity;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
+using BBT.Resource.Resources.Authorize;
 using BBT.Resource.Roles;
 using BBT.Resource.Rules;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,11 @@ public class ResourceApplicationModule : PrismModule
     public override void ConfigureServices(ModuleConfigurationContext context)
     {
         Configure<PrismAutoMapperOptions>(options => { options.AddMaps<ResourceApplicationModule>(validate: true); });
+
+        var authorizeConfig = context.Services
+            .GetConfiguration()
+            .GetSection(CheckAuthorizeOptions.Name);
+        context.Services.Configure<CheckAuthorizeOptions>(authorizeConfig);
 
         context.Services.AddTransient<MultiLingualRoleDefinitionObjectMapper>();
         context.Services.AddTransient<MultiLingualResourceGroupObjectMapper>();

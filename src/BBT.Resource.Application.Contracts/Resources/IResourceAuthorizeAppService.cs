@@ -6,5 +6,5 @@ namespace BBT.Resource.Resources;
 
 public interface IResourceAuthorizeAppService : IApplicationService
 {
-    Task<CheckAuthorizeOutput> CheckAsync(CheckAuthorizeInput input, CancellationToken cancellationToken = default);
+    Task<CheckAuthorizeOutput> CheckAsync(string? type, CheckAuthorizeInput input, CancellationToken cancellationToken = default);
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BBT.Prism.Domain.Entities;
@@ -52,14 +53,16 @@ public class EfCoreResourceRepository(ResourceDbContext dbContext, IServiceProvi
     {
         var dbContext = await GetDbContextAsync();
         return await (from related in dbContext.ResourceRules.AsNoTracking()
-            where related.ResourceId == resourceId
-            join rule in dbContext.Rules.AsNoTracking()
-                on related.RuleId equals rule.Id
-            select new ResourceRuleModel
-            {
-                Rule = rule,
-                RelatedRule = related
-            }).ToListAsync(cancellationToken);
+                where related.ResourceId == resourceId
+                join rule in dbContext.Rules.AsNoTracking()
+                    on related.RuleId equals rule.Id
+                select new ResourceRuleModel
+                {
+                    Rule = rule,
+                    RelatedRule = related
+                })
+            .OrderBy(o => o.RelatedRule.Priority)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<ResourceRuleModel> GetRuleAsync(Guid resourceId, Guid ruleId,
@@ -98,6 +101,7 @@ public class EfCoreResourceRepository(ResourceDbContext dbContext, IServiceProvi
                     Privilege = privilege,
                     RelatedPrivilege = related
                 })
+            .OrderBy(o => o.RelatedPrivilege.Priority)
             .ToListAsync(cancellationToken);
     }
 
@@ -122,5 +126,16 @@ public class EfCoreResourceRepository(ResourceDbContext dbContext, IServiceProvi
         }
 
         return entity;
+    }
+
+    public async Task<Resource?> FindByRegexAsync(string url, ResourceType type,
+        CancellationToken cancellationToken = default)
+    {
+        return await (await GetDbSetAsync())
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p =>
+                Regex.IsMatch(url, p.Url)
+                && (p.Type == type || p.Type == ResourceType.ALL)
+                && p.Status == Status.Active, cancellationToken);
     }
 }

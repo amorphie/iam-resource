@@ -12,3 +12,4 @@ public enum ResourceType: byte
     TRACE,
     ALL
 }
+
