@@ -22,17 +22,15 @@ public class EfCoreRoleRepository(ResourceDbContext dbContext, IServiceProvider 
         CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync();
-        var roleEntity = await (from role in dbContext.Roles.AsNoTracking()
+        var roleEntity = await (from role in dbContext.Roles.Include(i => i.Translations).AsNoTracking()
                 where role.Id == id
-                join definition in dbContext.RoleDefinitions.AsNoTracking()
+                join definition in dbContext.RoleDefinitions.Include(i => i.Translations).AsNoTracking()
                     on role.DefinitionId equals definition.Id
                 select new RoleWithDefinitionModel
                 {
                     Role = role,
                     Definition = definition
                 })
-            .Include(r => r.Role.Translations)
-            .Include(r => r.Definition.Translations)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (roleEntity == null)

@@ -14,11 +14,11 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http" Version="$(AspVersioningPackageVersion)" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="$(AspVersioningPackageVersion)" />
-    <PackageReference Include="BBT.Prism.AspNetCore" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="BBT.Prism.AspNetCore.Dapr.EventBus" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="BBT.Prism.AspNetCore.HealthChecks" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="BBT.Prism.AspNetCore.HealthChecks.Dapr" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="BBT.Prism.AspNetCore.Serilog" Version="$(PrismPackageVersion)" />
+    <PackageReference Include="BBT.Prism.AspNetCore" Version="1.1.5-rc.3" />
+    <PackageReference Include="BBT.Prism.AspNetCore.Dapr.EventBus" Version="1.1.5-rc.3" />
+    <PackageReference Include="BBT.Prism.AspNetCore.HealthChecks" Version="1.1.5-rc.3" />
+    <PackageReference Include="BBT.Prism.AspNetCore.HealthChecks.Dapr" Version="1.1.5-rc.3" />
+    <PackageReference Include="BBT.Prism.AspNetCore.Serilog" Version="1.1.5-rc.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="$(SwashbucklePackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(OpenApiPackageVersion)" />
     <PackageReference Include="Dapr.Extensions.Configuration" Version="$(DaprPackageVersion)" />

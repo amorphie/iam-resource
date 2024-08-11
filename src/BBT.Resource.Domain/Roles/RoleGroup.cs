@@ -12,7 +12,6 @@ public class RoleGroup : AuditedAggregateRoot<Guid>, IMultiLingualEntity<RoleGro
     public string[]? Tags { get; set; }
     public Status Status { get; private set; }
     public ICollection<RoleGroupTranslation> Translations { get; set; }
-
     public ICollection<RoleGroupRole> Roles { get; private set; }
 
     private RoleGroup()
@@ -55,7 +54,10 @@ public class RoleGroup : AuditedAggregateRoot<Guid>, IMultiLingualEntity<RoleGro
 
     public void AddRole(Guid roleId)
     {
-        Roles.Add(new RoleGroupRole(Id, roleId));
+        if (Roles.All(a => a.RoleId != roleId))
+        {
+            Roles.Add(new RoleGroupRole(Id, roleId));
+        }
     }
 
     public void RemoveRole(Guid roleId)

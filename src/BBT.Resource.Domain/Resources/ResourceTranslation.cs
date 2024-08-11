@@ -22,9 +22,9 @@ public class ResourceTranslation : Entity, IEntityTranslation
         //For Orm
     }
 
-    internal ResourceTranslation(Guid groupId, string language, string name, string? description)
+    internal ResourceTranslation(Guid resourceId, string language, string name, string? description)
     {
-        ResourceId = groupId;
+        ResourceId = resourceId;
         Language = Check.NotNullOrEmpty(language, nameof(Language), SharedConsts.MaxLanguageLength);
         SetName(name);
         SetDescription(description);
@@ -37,6 +37,6 @@ public class ResourceTranslation : Entity, IEntityTranslation
 
     internal void SetDescription(string? description)
     {
-        Description = Check.NotNullOrEmpty(description, nameof(Description), ResourceConsts.MaxDescriptionLength);
+        Description = Check.Length(description, nameof(Description), ResourceConsts.MaxDescriptionLength);
     }
 }

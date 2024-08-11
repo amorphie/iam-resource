@@ -9,6 +9,6 @@
     <ProjectReference Include="..\BBT.Resource.Domain.Shared\BBT.Resource.Domain.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BBT.Prism.Ddd.Application.Contracts" Version="$(PrismPackageVersion)" />
+    <PackageReference Include="BBT.Prism.Ddd.Application.Contracts" Version="1.1.5-rc.3" />
   </ItemGroup>
 </Project>

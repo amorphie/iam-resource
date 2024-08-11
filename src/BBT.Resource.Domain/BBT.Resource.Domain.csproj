@@ -9,8 +9,8 @@
     <ProjectReference Include="..\BBT.Resource.Domain.Shared\BBT.Resource.Domain.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BBT.Prism.Data.Seeding" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="BBT.Prism.Ddd.Domain" Version="$(PrismPackageVersion)" />
+    <PackageReference Include="BBT.Prism.Data.Seeding" Version="1.1.5-rc.3" />
+    <PackageReference Include="BBT.Prism.Ddd.Domain" Version="1.1.5-rc.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)" />
   </ItemGroup>
 </Project>

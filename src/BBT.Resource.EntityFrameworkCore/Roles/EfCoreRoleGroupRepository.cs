@@ -26,14 +26,13 @@ public class EfCoreRoleGroupRepository(ResourceDbContext dbContext, IServiceProv
         var dbContext = await GetDbContextAsync();
         var entity = await (from related in dbContext.RoleGroupRoles.AsNoTracking()
                 where related.GroupId == groupId && related.RoleId == roleId
-                join role in dbContext.Roles.AsNoTracking()
+                join role in dbContext.Roles.Include(r => r.Translations).AsNoTracking()
                     on related.RoleId equals role.Id
                 select new RoleGroupRelatedRoleModel
                 {
                     Role = role,
                     RelatedRole = related
                 })
-            .Include(r => r.Role.Translations)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (entity == null)
@@ -50,14 +49,13 @@ public class EfCoreRoleGroupRepository(ResourceDbContext dbContext, IServiceProv
         var dbContext = await GetDbContextAsync();
         return await (from related in dbContext.RoleGroupRoles.AsNoTracking()
                 where related.GroupId == groupId
-                join role in dbContext.Roles.AsNoTracking()
+                join role in dbContext.Roles.Include(i => i.Translations).AsNoTracking()
                     on related.RoleId equals role.Id
                 select new RoleGroupRelatedRoleModel
                 {
                     Role = role,
                     RelatedRole = related
                 })
-            .Include(r => r.Role.Translations)
             .ToListAsync(cancellationToken);
     }
 }

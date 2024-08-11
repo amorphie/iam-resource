@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BBT.Resource.Resources;
 
-public class UpdateResourceInput
+public class UpdateResourceInput(List<ResourceTranslationDto> translations)
 {
     [Required] public ResourceType Type { get; set; }
     [Required]
@@ -14,5 +14,5 @@ public class UpdateResourceInput
     [Required]
     [MaxLength(SharedConsts.MaxStatusLength)]
     public string Status { get; set; }
-    public List<ResourceTranslationDto> Translations { get; set; }
+    public List<ResourceTranslationDto> Translations { get; set; } = translations;
 }

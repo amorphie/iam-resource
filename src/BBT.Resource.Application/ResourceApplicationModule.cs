@@ -41,5 +41,10 @@ public class ResourceApplicationModule : PrismModule
         context.Services.AddTransient<IRoleDefinitionAppService, RoleDefinitionAppService>();
         context.Services.AddTransient<IRoleGroupAppService, RoleGroupAppService>();
         context.Services.AddTransient<IRoleAppService, RoleAppService>();
+        context.Services.AddTransient<IResourceAuthorizeAppService, ResourceAuthorizeAppService>();
+
+        context.Services.AddTransient<CheckAuthorizeByRule>();
+        context.Services.AddTransient<CheckAuthorizeByPrivilege>();
+        context.Services.AddSingleton<ICheckAuthorizeFactory, CheckAuthorizeFactory>();
     }
 }

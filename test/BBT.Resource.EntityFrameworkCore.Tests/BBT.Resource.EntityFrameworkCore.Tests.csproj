@@ -10,10 +10,7 @@
     <ProjectReference Include="..\BBT.Resource.Application.Tests\BBT.Resource.Application.Tests.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BBT.Prism.EntityFrameworkCore.Sqlite" Version="$(PrismPackageVersion)" />
+    <PackageReference Include="BBT.Prism.EntityFrameworkCore.Sqlite" Version="1.1.5-rc.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkPackageVersion)" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EntityFrameworkCore\Applications\" />
   </ItemGroup>
 </Project>

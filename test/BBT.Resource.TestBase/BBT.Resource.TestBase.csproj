@@ -6,9 +6,10 @@
     <RootNamespace>BBT.Resource</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BBT.Prism.Data.Seeding" Version="$(PrismPackageVersion)" />
-    <PackageReference Include="BBT.Prism.TestBase" Version="$(PrismPackageVersion)" />
+    <PackageReference Include="BBT.Prism.Data.Seeding" Version="1.1.5-rc.3" />
+    <PackageReference Include="BBT.Prism.TestBase" Version="1.1.5-rc.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkPackageVersion)" />
+    <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="NSubstitute" Version="$(NSubstitutePackageVersion)" />
     <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="$(NSubstituteAnalyzersPackageVersion)">
       <PrivateAssets>all</PrivateAssets>

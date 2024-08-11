@@ -29,6 +29,6 @@ public class Rule : AuditedEntity<Guid>
 
     public void SetExpression(string expression)
     {
-        Name = Check.NotNullOrEmpty(expression, nameof(Expression));
+        Expression = Check.NotNullOrEmpty(expression, nameof(Expression));
     }
 }
