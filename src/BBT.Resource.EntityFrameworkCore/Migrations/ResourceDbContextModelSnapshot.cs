@@ -262,6 +262,10 @@ namespace BBT.Resource.Migrations
                     b.Property<Guid>("PolicyId")
                         .HasColumnType("uuid");
 
+                    b.Property<string[]>("Clients")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("CreatedAt");

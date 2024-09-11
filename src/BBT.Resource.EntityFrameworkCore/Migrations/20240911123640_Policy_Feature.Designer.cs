@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BBT.Resource.Migrations
 {
     [DbContext(typeof(ResourceDbContext))]
-    [Migration("20240910114230_Policy_Feature")]
+    [Migration("20240911123640_Policy_Feature")]
     partial class Policy_Feature
     {
         /// <inheritdoc />
@@ -264,6 +264,10 @@ namespace BBT.Resource.Migrations
 
                     b.Property<Guid>("PolicyId")
                         .HasColumnType("uuid");
+
+                    b.Property<string[]>("Clients")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone")

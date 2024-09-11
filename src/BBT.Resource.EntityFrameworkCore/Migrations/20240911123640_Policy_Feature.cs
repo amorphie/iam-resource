@@ -66,6 +66,7 @@ namespace BBT.Resource.Migrations
                 {
                     ResourceId = table.Column<Guid>(type: "uuid", nullable: false),
                     PolicyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Clients = table.Column<string[]>(type: "text[]", nullable: false),
                     Status = table.Column<string>(type: "character varying(1)", maxLength: 1, nullable: false),
                     Priority = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
