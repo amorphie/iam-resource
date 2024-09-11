@@ -22,4 +22,10 @@ public class TestData
     public Guid ResourceId_1 { get; } = Guid.Parse("2ae96097-6198-48c2-a408-3ee32ef7e1c9");
     public Guid ResourceId_2 { get; } = Guid.Parse("9d87bb21-c1d9-4716-8f56-547c1d9339b6");
     public Guid ResourceId_3 { get; } = Guid.Parse("d62eaade-3861-476e-bcee-6213f17310c9");
+    
+    public Guid PolicyId_1 { get; } = Guid.Parse("f0a8e2b7-30bc-4737-983b-09e2dfe528ae");
+    public Guid PolicyId_2 { get; } = Guid.Parse("6939290f-3807-4ca2-955a-21382511e18e");
+    public Guid PolicyId_3 { get; } = Guid.Parse("830ec4dd-bf0d-4cfc-84ce-153267210a80");
+    public Guid PolicyId_4 { get; } = Guid.Parse("fd63cdac-44eb-4254-9781-68abb4d051bb");
+    public Guid PolicyId_5 { get; } = Guid.Parse("2d83457d-b979-48c2-b47d-8f1b9ae29f59");
 }

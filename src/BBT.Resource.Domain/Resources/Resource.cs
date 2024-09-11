@@ -20,6 +20,7 @@ public class Resource : AuditedAggregateRoot<Guid>, IMultiLingualEntity<Resource
     public ICollection<ResourceTranslation> Translations { get; set; }
     public ICollection<ResourceRule> Rules { get; private set; }
     public ICollection<ResourcePrivilege> Privileges { get; private set; }
+    public ICollection<ResourcePolicy> Policies { get; private set; }
 
     private Resource()
     {
@@ -39,6 +40,7 @@ public class Resource : AuditedAggregateRoot<Guid>, IMultiLingualEntity<Resource
         Rules = new Collection<ResourceRule>();
         Privileges = new Collection<ResourcePrivilege>();
         Translations = new Collection<ResourceTranslation>();
+        Policies = new Collection<ResourcePolicy>();
     }
 
     public void SetUrl(string url)
@@ -129,6 +131,39 @@ public class Resource : AuditedAggregateRoot<Guid>, IMultiLingualEntity<Resource
             var privilege = Privileges.First(p => p.PrivilegeId == privilegeId);
             privilege.ChangeStatus(Status.FromCode(status));
             privilege.SetPriority(priority);
+        }
+    }
+
+
+    public void AddPolicy(Guid policyId, string[] clients, int priority = 1)
+    {
+        if (Policies.All(a => a.PolicyId != policyId))
+        {
+            Policies.Add(new ResourcePolicy(Id, policyId, clients, priority));
+        }
+        else
+        {
+            var policy = Policies.First(p => p.PolicyId == policyId);
+            policy.ChangeStatus(Status.Active);
+        }
+    }
+
+    public void RemovePolicy(Guid policyId)
+    {
+        if (Policies.Any(a => a.PolicyId == policyId))
+        {
+            Policies.Remove(Policies.First(p => p.PolicyId == policyId));
+        }
+    }
+
+    public void UpdatePolicy(Guid policyId, string[] clients, string status, int priority = 1)
+    {
+        if (Policies.Any(a => a.PolicyId == policyId))
+        {
+            var policy = Policies.First(p => p.PolicyId == policyId);
+            policy.ChangeStatus(Status.FromCode(status));
+            policy.ChangeClients(clients);
+            policy.SetPriority(priority);
         }
     }
 }

@@ -44,6 +44,20 @@ public interface IResourceAppService : IApplicationService
         CancellationToken cancellationToken = default);
 
     Task RemovePrivilegeAsync(Guid resourceId, Guid privilegeId, CancellationToken cancellationToken = default);
+    
+    Task<ListResultDto<ResourcePolicyDto>> GetPoliciesAsync(Guid resourceId,
+        CancellationToken cancellationToken = default);
+    
+    Task<ResourcePolicyDto> GetPolicyAsync(Guid resourceId, Guid policyId,
+        CancellationToken cancellationToken = default);
+    
+    Task AddPolicyAsync(Guid resourceId, AddPolicyToResourceInput input,
+        CancellationToken cancellationToken = default);
+
+    Task UpdatePolicyAsync(Guid resourceId, Guid policyId, UpdateResourcePolicyInput input,
+        CancellationToken cancellationToken = default);
+
+    Task RemovePolicyAsync(Guid resourceId, Guid policyId, CancellationToken cancellationToken = default);
 
     Task MapAsync(ResourceRuleMapInput input, CancellationToken cancellationToken = default);
 }

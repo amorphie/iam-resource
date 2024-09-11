@@ -2,6 +2,7 @@ using BBT.Prism.Application;
 using BBT.Prism.AutoMapper;
 using BBT.Prism.Mapper;
 using BBT.Prism.Modularity;
+using BBT.Resource.Policies;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
 using BBT.Resource.Resources.Authorize;
@@ -42,6 +43,8 @@ public class ResourceApplicationModule : PrismModule
         context.Services.AddTransient<IRoleGroupAppService, RoleGroupAppService>();
         context.Services.AddTransient<IRoleAppService, RoleAppService>();
         context.Services.AddTransient<IResourceAuthorizeAppService, ResourceAuthorizeAppService>();
+        context.Services.AddTransient<IResourceAuthorizeAppService, ResourceAuthorizeAppService>();
+        context.Services.AddTransient<IPolicyAppService, PoliciesAppService>();
 
         context.Services.AddTransient<CheckAuthorizeByRule>();
         context.Services.AddTransient<CheckAuthorizeByPrivilege>();

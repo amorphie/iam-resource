@@ -1,5 +1,6 @@
 using System;
 using BBT.Prism.EntityFrameworkCore;
+using BBT.Resource.Policies;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
 using BBT.Resource.Roles;
@@ -32,12 +33,14 @@ public class ResourceDbContext(
     public virtual DbSet<RoleGroupRole> RoleGroupRoles { get; set; }
     public virtual DbSet<Scope> Scopes { get; set; }
     public virtual DbSet<ScopeTranslation> ScopeTranslations { get; set; }
-
-
+    
+    public virtual DbSet<Policy> Policies { get; set; }
+    public virtual DbSet<ResourcePolicy> ResourcePolicies { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        
+
         builder.ConfigureResource();
     }
 }

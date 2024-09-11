@@ -3,6 +3,7 @@ using BBT.Prism.Domain.EntityFrameworkCore;
 using BBT.Resource.Data;
 using BBT.Prism.EntityFrameworkCore;
 using BBT.Prism.Modularity;
+using BBT.Resource.Policies;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
 using BBT.Resource.Roles;
@@ -37,5 +38,6 @@ public class ResourceEntityFrameworkCoreModule : PrismModule
         context.Services.AddTransient<IRoleDefinitionRepository, EfCoreRoleDefinitionRepository>();
         context.Services.AddTransient<IRoleGroupRepository, EfCoreRoleGroupRepository>();
         context.Services.AddTransient<IRoleRepository, EfCoreRoleRepository>();
+        context.Services.AddTransient<IPolicyRepository, EfCorePolicyRepository>();
     }
 }

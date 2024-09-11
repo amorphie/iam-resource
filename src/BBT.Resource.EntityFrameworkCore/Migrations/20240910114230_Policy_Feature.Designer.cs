@@ -4,6 +4,7 @@ using BBT.Prism.EntityFrameworkCore;
 using BBT.Resource.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BBT.Resource.Migrations
 {
     [DbContext(typeof(ResourceDbContext))]
-    partial class ResourceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240910114230_Policy_Feature")]
+    partial class Policy_Feature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

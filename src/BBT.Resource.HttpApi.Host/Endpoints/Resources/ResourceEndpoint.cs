@@ -18,6 +18,8 @@ public class ResourceEndpoint : IEndpoint
             .WithTags("Resources")
             .MapToApiVersion(1);
 
+        #region Resources
+
         group.MapGet("/", async (
                 [FromServices] IResourceAppService appService,
                 [AsParameters] PagedResourceInput input,
@@ -53,6 +55,10 @@ public class ResourceEndpoint : IEndpoint
                 CancellationToken cancellationToken
             ) => await appService.DeleteAsync(id, cancellationToken)
         );
+
+        #endregion
+
+        #region Rules
 
         group.MapGet("/{resourceId}/rules", async (
                 [FromServices] IResourceAppService appService,
@@ -94,6 +100,10 @@ public class ResourceEndpoint : IEndpoint
             ) => await appService.RemoveRuleAsync(resourceId, ruleId, cancellationToken)
         );
 
+        #endregion
+
+        #region Privileges
+
         group.MapGet("/{resourceId}/privileges", async (
                 [FromServices] IResourceAppService appService,
                 [FromRoute] Guid resourceId,
@@ -133,6 +143,52 @@ public class ResourceEndpoint : IEndpoint
                 CancellationToken cancellationToken
             ) => await appService.RemovePrivilegeAsync(resourceId, privilegeId, cancellationToken)
         );
+
+        #endregion
+
+        #region Policies
+        group.MapGet("/{resourceId}/policies", async (
+                [FromServices] IResourceAppService appService,
+                [FromRoute] Guid resourceId,
+                CancellationToken cancellationToken
+            ) => await appService.GetPoliciesAsync(resourceId, cancellationToken)
+        );
+
+        group.MapGet("/{resourceId}/policies/{policyId}", async (
+                [FromServices] IResourceAppService appService,
+                [FromRoute] Guid resourceId,
+                [FromRoute] Guid policyId,
+                CancellationToken cancellationToken
+            ) => await appService.GetPolicyAsync(resourceId, policyId, cancellationToken)
+        );
+
+        group.MapPost("/{resourceId}/policies", async (
+                [FromServices] IResourceAppService appService,
+                [FromRoute] Guid resourceId,
+                [FromBody] AddPolicyToResourceInput input,
+                CancellationToken cancellationToken
+            ) => await appService.AddPolicyAsync(resourceId, input, cancellationToken)
+        );
+
+        group.MapPut("/{resourceId}/policies/{policyId}", async (
+                [FromServices] IResourceAppService appService,
+                [FromRoute] Guid resourceId,
+                [FromRoute] Guid policyId,
+                [FromBody] UpdateResourcePolicyInput input,
+                CancellationToken cancellationToken
+            ) => await appService.UpdatePolicyAsync(resourceId, policyId, input, cancellationToken)
+        );
+
+        group.MapDelete("/{resourceId}/policies/{policyId}", async (
+                [FromServices] IResourceAppService appService,
+                [FromRoute] Guid resourceId,
+                [FromRoute] Guid policyId,
+                CancellationToken cancellationToken
+            ) => await appService.RemovePolicyAsync(resourceId, policyId, cancellationToken)
+        );
+        
+
+        #endregion
 
         group.MapPost("/map", async (
                 [FromServices] IResourceAppService appService,

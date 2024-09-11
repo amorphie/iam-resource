@@ -1,5 +1,6 @@
 using BBT.Prism.EntityFrameworkCore.Modeling;
 using BBT.Resource.EntityFrameworkCore.ValueConverters;
+using BBT.Resource.Policies;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
 using BBT.Resource.Roles;
@@ -75,7 +76,7 @@ public static class ResourceDbContextModelCreatingExtensions
                 .WithOne()
                 .HasForeignKey(p => p.ResourceId);
 
-            b.HasMany(p => p.Privileges)
+            b.HasMany(p => p.Policies)
                 .WithOne()
                 .HasForeignKey(p => p.ResourceId);
         });
@@ -99,6 +100,19 @@ public static class ResourceDbContextModelCreatingExtensions
 
             //TODO: ClientId is currently nullable, so it is not added to the index.
             b.HasKey(k => new { k.ResourceId, k.RuleId });
+            b.Property(p => p.Status)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxStatusLength)
+                .HasConversion(new StatusConverter());
+        });
+
+        builder.Entity<ResourcePolicy>(b =>
+        {
+            b.ToTable("ResourcePolicies");
+            b.ConfigureByConvention();
+
+            b.HasKey(k => new { k.ResourceId, k.PolicyId });
+            
             b.Property(p => p.Status)
                 .IsRequired()
                 .HasMaxLength(SharedConsts.MaxStatusLength)
@@ -322,6 +336,66 @@ public static class ResourceDbContextModelCreatingExtensions
             b.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(RoleConsts.MaxNameLength);
+        });
+
+        #endregion
+
+        #region Policies
+
+        builder.Entity<Policy>(b =>
+        {
+            b.ToTable("Policies");
+            b.ConfigureByConvention();
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(PolicyConsts.MaxNameLength);
+
+            b.Property(p => p.ParentId);
+            b.Property(p => p.Priority);
+            b.Property(p => p.Permissions);
+            b.Property(p => p.EvaluationOrder);
+
+            b.Property(p => p.Effect)
+                .IsRequired()
+                .HasMaxLength(PolicyConsts.MaxEffectLength)
+                .HasConversion(new EffectConverter());
+
+            b.Property(p => p.ConflictResolution)
+                .IsRequired()
+                .HasDefaultValue(ConflictResolution.NA)
+                .HasMaxLength(PolicyConsts.MaxConflictResolutionLength)
+                .HasConversion(new ConflictResolutionConverter());
+
+            b.HasMany<ResourcePolicy>()
+                .WithOne()
+                .HasForeignKey(p => p.PolicyId);
+
+            b.OwnsOne(p => p.Condition, cnd =>
+            {
+                cnd.ToTable("PolicyConditions");
+                cnd.WithOwner();
+                cnd.Property(t => t.Roles);
+                cnd.Property(t => t.Rules);
+                cnd.OwnsOne(c => c.Time, time =>
+                {
+                    time.Property(t => t.Start)
+                        .HasColumnName("StartTime");
+                    time.Property(t => t.End)
+                        .HasColumnName("EndTime");
+                    time.Property(t => t.Timezone)
+                        .HasMaxLength(PolicyConsts.MaxTimezoneLength);
+                });
+
+                // ObjectDictionary fields as JSON
+                cnd.Property(t => t.Context)
+                    .HasConversion(new ObjectDictionaryConverter())
+                    .HasColumnType("jsonb");
+
+                cnd.Property(t => t.Attributes)
+                    .HasConversion(new ObjectDictionaryConverter())
+                    .HasColumnType("jsonb");
+            });
         });
 
         #endregion

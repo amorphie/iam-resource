@@ -17,7 +17,7 @@ public abstract class ResourceAppServiceTests<TStartupModule> : ResourceApplicat
         _appService = GetRequiredService<IResourceAppService>();
         _testData = GetRequiredService<TestData>();
     }
-    
+
     [Fact]
     public async Task CreateAsync_ShouldReturnCreatedResource()
     {
@@ -41,8 +41,8 @@ public abstract class ResourceAppServiceTests<TStartupModule> : ResourceApplicat
     public async Task UpdateAsync_ShouldReturnUpdatedResource()
     {
         var input = new UpdateResourceInput([
-            new() { Language = "en-US", Name = "Get User", Description = "Get user by id"},
-            new() { Language = "tr-TR", Name = "Kullanıcı Getir", Description = "Id'ye göre kullanıcı getir"}
+            new() { Language = "en-US", Name = "Get User", Description = "Get user by id" },
+            new() { Language = "tr-TR", Name = "Kullanıcı Getir", Description = "Id'ye göre kullanıcı getir" }
         ])
         {
             Status = Status.Active.Code,
@@ -76,14 +76,14 @@ public abstract class ResourceAppServiceTests<TStartupModule> : ResourceApplicat
         result.ShouldNotBeNull();
         result.Items.ShouldHaveSingleItem();
     }
-    
+
     [Fact]
     public async Task GetRulesAsync_ShouldReturnResourceRuleDto()
     {
         var response = await _appService.GetRulesAsync(_testData.ResourceId_1);
         response.Items.Count.ShouldBeGreaterThanOrEqualTo(1);
     }
-    
+
     [Fact]
     public async Task AddRuleAsync_ShouldAddRule()
     {
@@ -96,7 +96,7 @@ public abstract class ResourceAppServiceTests<TStartupModule> : ResourceApplicat
 
         await _appService.AddRuleAsync(_testData.ResourceId_2, input);
     }
-    
+
     [Fact]
     public async Task AddRuleAsync_ShouldAddRule_IfRuleExists()
     {
@@ -109,7 +109,7 @@ public abstract class ResourceAppServiceTests<TStartupModule> : ResourceApplicat
 
         await _appService.AddRuleAsync(_testData.ResourceId_1, input);
     }
-    
+
     [Fact]
     public async Task UpdateRuleAsync_ShouldUpdateRule()
     {
@@ -121,10 +121,49 @@ public abstract class ResourceAppServiceTests<TStartupModule> : ResourceApplicat
 
         await _appService.UpdateRuleAsync(_testData.ResourceId_1, _testData.RuleId_1, input);
     }
-    
+
     [Fact]
     public async Task RemoveRuleAsync_ShouldRemoveRule()
     {
         await _appService.RemoveRuleAsync(_testData.ResourceId_1, _testData.RuleId_1);
+    }
+    
+    [Fact]
+    public async Task GetPoliciesAsync_ShouldReturnResourcePolicyDto()
+    {
+        var response = await _appService.GetPoliciesAsync(_testData.ResourceId_1);
+        response.Items.Count.ShouldBeGreaterThanOrEqualTo(1);
+    }
+
+    [Fact]
+    public async Task AddPolicyAsync_ShouldAddPolicy()
+    {
+        var input = new AddPolicyToResourceInput()
+        {
+            PolicyId = _testData.PolicyId_1,
+            Clients = ["test_a"],
+            Priority = 1
+        };
+
+        await _appService.AddPolicyAsync(_testData.ResourceId_2, input);
+    }
+
+    [Fact]
+    public async Task UpdatePolicyAsync_ShouldUpdatePolicy()
+    {
+        var input = new UpdateResourcePolicyInput()
+        {
+            Status = Status.Passive.Code,
+            Priority = 2,
+            Clients = ["test_a", "test_b"],
+        };
+
+        await _appService.UpdatePolicyAsync(_testData.ResourceId_1, _testData.PolicyId_1, input);
+    }
+
+    [Fact]
+    public async Task RemovePolicyAsync_ShouldRemovePolicy()
+    {
+        await _appService.RemovePolicyAsync(_testData.ResourceId_1, _testData.PolicyId_1);
     }
 }

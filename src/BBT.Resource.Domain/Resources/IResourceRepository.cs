@@ -10,11 +10,13 @@ public interface IResourceRepository : IRepository<Resource, Guid>
 {
     Task<Resource> GetWithRuleAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Resource> GetWithPrivilegeAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Resource> GetWithPoliciesAsync(Guid id, CancellationToken cancellationToken = default);
     Task<List<ResourceRuleModel>> GetRulesAsync(Guid resourceId, CancellationToken cancellationToken = default);
     Task<ResourceRuleModel> GetRuleAsync(Guid resourceId, Guid ruleId, CancellationToken cancellationToken = default);
     Task<List<ResourcePrivilegeModel>> GetPrivilegesAsync(Guid resourceId, CancellationToken cancellationToken = default);
     Task<ResourcePrivilegeModel> GetPrivilegeAsync(Guid resourceId, Guid privilegeId,
         CancellationToken cancellationToken = default);
-
+    Task<List<ResourcePolicyModel>> GetPoliciesAsync(Guid resourceId, CancellationToken cancellationToken = default);
+    Task<ResourcePolicyModel> GetPolicyAsync(Guid resourceId, Guid policyId, CancellationToken cancellationToken = default);
     Task<Resource?> FindByRegexAsync(string url, ResourceType type, CancellationToken cancellationToken = default);
 }

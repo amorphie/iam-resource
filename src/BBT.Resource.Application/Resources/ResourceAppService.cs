@@ -228,6 +228,65 @@ public class ResourceAppService(
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<ListResultDto<ResourcePolicyDto>> GetPoliciesAsync(Guid resourceId,
+        CancellationToken cancellationToken = default)
+    {
+        var resourcePolicies = await resourceRepository.GetPoliciesAsync(resourceId, cancellationToken);
+        var items = resourcePolicies.Select(item =>
+            new ResourcePolicyDto()
+            {
+                CreatedAt = item.RelatedPolicy.CreatedAt,
+                ModifiedAt = item.RelatedPolicy.ModifiedAt,
+                Status = item.RelatedPolicy.Status,
+                Priority = item.RelatedPolicy.Priority,
+                Clients = item.RelatedPolicy.Clients,
+                PolicyName = item.Policy.Name,
+                Effect = item.Policy.Effect
+            }).ToList();
+        return new ListResultDto<ResourcePolicyDto>(items);
+    }
+
+    public async Task<ResourcePolicyDto> GetPolicyAsync(Guid resourceId, Guid policyId,
+        CancellationToken cancellationToken = default)
+    {
+        var resourcePrivilege = await resourceRepository.GetPolicyAsync(resourceId, policyId, cancellationToken);
+        return new ResourcePolicyDto()
+        {
+            CreatedAt = resourcePrivilege.RelatedPolicy.CreatedAt,
+            ModifiedAt = resourcePrivilege.RelatedPolicy.ModifiedAt,
+            Status = resourcePrivilege.RelatedPolicy.Status,
+            Priority = resourcePrivilege.RelatedPolicy.Priority,
+            Clients = resourcePrivilege.RelatedPolicy.Clients,
+            PolicyName = resourcePrivilege.Policy.Name,
+            Effect = resourcePrivilege.Policy.Effect
+        };
+    }
+
+    public async Task AddPolicyAsync(Guid resourceId, AddPolicyToResourceInput input, CancellationToken cancellationToken = default)
+    {
+        var resource = await resourceRepository.GetWithPoliciesAsync(resourceId, cancellationToken);
+        resource.AddPolicy(input.PolicyId, input.Clients, input.Priority);
+        await resourceRepository.UpdateAsync(resource, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdatePolicyAsync(Guid resourceId, Guid policyId, UpdateResourcePolicyInput input,
+        CancellationToken cancellationToken = default)
+    {
+        var resource = await resourceRepository.GetWithPoliciesAsync(resourceId, cancellationToken);
+        resource.UpdatePolicy(policyId, input.Clients, input.Status, input.Priority);
+        await resourceRepository.UpdateAsync(resource, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemovePolicyAsync(Guid resourceId, Guid policyId, CancellationToken cancellationToken = default)
+    {
+        var resource = await resourceRepository.GetWithPoliciesAsync(resourceId, cancellationToken);
+        resource.RemovePrivilege(policyId);
+        await resourceRepository.UpdateAsync(resource, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task MapAsync(ResourceRuleMapInput input, CancellationToken cancellationToken = default)
     {
         var ruleNames = input.RuleName.Split(",");
