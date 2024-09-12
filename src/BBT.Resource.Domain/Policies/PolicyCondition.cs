@@ -35,7 +35,7 @@ public class PolicyCondition : ValueObject
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return Roles;
-        yield return Time ?? new PolicyTime(new TimeOnly(0, 0, 0), new TimeOnly(0, 0, 0), PolicyConsts.DefaultTimezone);
+        yield return Time ?? new PolicyTime(new TimeOnly(0, 0, 0), new TimeOnly(0, 0, 0));
         yield return Rules;
         yield return Context;
         yield return Attributes;

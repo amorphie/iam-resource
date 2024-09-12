@@ -8,6 +8,9 @@ public class ResourcePolicy : AuditedEntity
     public Guid ResourceId { get; private set; }
     public Guid PolicyId { get; private set; }
 
+    //TODO: overide policy metası ekle. 
+    
+    
     /// <summary>
     /// Client Ids
     /// </summary>

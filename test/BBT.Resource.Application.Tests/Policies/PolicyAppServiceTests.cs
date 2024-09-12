@@ -34,14 +34,15 @@ public abstract class PolicyAppServiceTests<TStartupModule> : ResourceApplicatio
             {
                 Attributes = new ObjectDictionary(new Dictionary<string, object?>()
                 {
-                    { "", "" },
-                    { "", "" }
+                    { "organization", "Burgan" },
+                    { "group", "Kurumsal" }
                 }),
                 Context = new ObjectDictionary(new Dictionary<string, object?>()
                 {
-                    { "", "" },
-                    { "", "" }
+                    { "location", "HQ" },
+                    { "device", "CorporateDevice" }
                 }),
+                Rules = [_testData.RuleId_1.ToString()],
                 Roles = ["admin", "editor"],
                 Time = new PolicyTimeDto()
                 {
@@ -56,7 +57,7 @@ public abstract class PolicyAppServiceTests<TStartupModule> : ResourceApplicatio
         response.ShouldNotBeNull();
         response.Id.ShouldBe(input.Id);
     }
-
+    
     [Fact]
     public async Task UpdateAsync_ShouldReturnUpdatedPolicy()
     {
@@ -71,19 +72,20 @@ public abstract class PolicyAppServiceTests<TStartupModule> : ResourceApplicatio
             {
                 Attributes = new ObjectDictionary(new Dictionary<string, object?>()
                 {
-                    { "", "" },
-                    { "", "" }
+                    { "organization", "Burgan" },
+                    { "group", "Kurumsal" }
                 }),
                 Context = new ObjectDictionary(new Dictionary<string, object?>()
                 {
-                    { "", "" },
-                    { "", "" }
+                    { "location", "HQ" },
+                    { "device", "CorporateDevice" }
                 }),
+                Rules = [_testData.RuleId_1.ToString(), _testData.RuleId_2.ToString()],
                 Roles = ["admin", "editor"],
                 Time = new PolicyTimeDto()
                 {
                     Start = new TimeOnly(9, 0),
-                    End = new TimeOnly(11, 0),
+                    End = new TimeOnly(18, 0),
                     Timezone = "UTC"
                 }
             }

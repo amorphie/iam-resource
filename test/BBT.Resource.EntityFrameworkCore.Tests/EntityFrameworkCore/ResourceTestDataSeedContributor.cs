@@ -106,44 +106,55 @@ public class ResourceTestDataSeedContributor(
     private List<Policy> GetPolicies()
     {
         var policy_1 = new Policy(testData.PolicyId_1, "Policy_1", Effect.Allow, 1);
-        policy_1.SetPermissions(["", ""]);
+        policy_1.SetPermissions(["AD.Management", "AD.Organization.Management"]);
         policy_1.UpdateCondition(
             context: new ObjectDictionary(),
-            attributes: new ObjectDictionary(),
-            roles: new[] { "" },
-            rules: new[] { "" },
+            attributes: new ObjectDictionary()
+            {
+                { "department", "IT" },
+                { "clearanceLevel", 5 }
+            },
+            roles: new[] { "admin" },
+            rules: new[] { testData.RuleId_1.ToString(), testData.RuleId_2.ToString() },
             time: null);
 
         var policy_2 = new Policy(testData.PolicyId_2, "Policy_2", Effect.Allow, 2);
         policy_2.UpdateCondition(
             context: new ObjectDictionary(),
-            attributes: new ObjectDictionary(),
-            roles: new[] { "" },
+            attributes: new ObjectDictionary()
+            {
+                { "department", "Integration" },
+                { "position", "Expert" }
+            },
+            roles: new[] { "viewer" },
             rules: new[] { "" },
             time: null);
-        
+
         var policy_3 = new Policy(testData.PolicyId_3, "Policy_3", Effect.Allow, 3);
         policy_3.UpdateCondition(
             context: new ObjectDictionary(),
             attributes: new ObjectDictionary(),
             roles: new[] { "" },
             rules: new[] { "" },
-            time: null);
-        
+            time: new PolicyTime(
+                new TimeOnly(9, 0, 0),
+                new TimeOnly(18, 0, 0)
+            ));
+
         var policy_4 = new Policy(testData.PolicyId_4, "Policy_4", Effect.Allow, 4);
         policy_4.UpdateCondition(
             context: new ObjectDictionary(),
             attributes: new ObjectDictionary(),
-            roles: new[] { "" },
+            roles: new[] { "assign_team" },
             rules: new[] { "" },
             time: null);
-        
+
         var policy_5 = new Policy(testData.PolicyId_5, "Policy_5", Effect.Allow, 4);
         policy_5.UpdateCondition(
             context: new ObjectDictionary(),
             attributes: new ObjectDictionary(),
             roles: new[] { "" },
-            rules: new[] { "" },
+            rules: new[] { testData.RuleId_1.ToString(), testData.RuleId_2.ToString() },
             time: null);
 
         return
@@ -174,6 +185,8 @@ public class ResourceTestDataSeedContributor(
 
         mock1.AddRule(GetRules()[0].Id);
         mock1.AddRule(GetRules()[1].Id, null, 2);
+        mock1.AddPolicy(GetPolicies()[0].Id, new[] { testData.ClientId_1.ToString(), testData.ClientId_2.ToString() });
+        mock1.AddPolicy(GetPolicies()[1].Id, new[] { testData.ClientId_1.ToString(), testData.ClientId_2.ToString() });
 
         var mock2 = new Resources.Resource(testData.ResourceId_2, testData.ResourceGroupId_1, ResourceType.POST,
             "/api/users([^/]+)");
@@ -181,6 +194,9 @@ public class ResourceTestDataSeedContributor(
         mock2.AddTranslation("tr-TR", "Kullanıcı Oluştur", "Yeni bir kullanıcı oluştur");
 
         mock2.AddRule(GetRules()[1].Id);
+        mock1.AddPolicy(GetPolicies()[0].Id, new[] { testData.ClientId_3.ToString(), testData.ClientId_4.ToString() });
+        mock1.AddPolicy(GetPolicies()[1].Id, new[] { testData.ClientId_3.ToString(), testData.ClientId_4.ToString() });
+        mock1.AddPolicy(GetPolicies()[2].Id, new[] { testData.ClientId_4.ToString(), testData.ClientId_5.ToString() });
 
         var mock3 = new Resources.Resource(testData.ResourceId_3, testData.ResourceGroupId_1, ResourceType.GET,
             "/api/users/([^/]+)/roles");

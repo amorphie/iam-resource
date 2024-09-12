@@ -282,7 +282,7 @@ public class ResourceAppService(
     public async Task RemovePolicyAsync(Guid resourceId, Guid policyId, CancellationToken cancellationToken = default)
     {
         var resource = await resourceRepository.GetWithPoliciesAsync(resourceId, cancellationToken);
-        resource.RemovePrivilege(policyId);
+        resource.RemovePolicy(policyId);
         await resourceRepository.UpdateAsync(resource, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }

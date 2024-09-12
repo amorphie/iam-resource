@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BBT.Prism;
 using BBT.Prism.Domain.Entities.Auditing;
 
@@ -15,6 +16,10 @@ public class Policy : AuditedAggregateRoot<Guid>
     public int Priority { get; private set; }
     public ConflictResolution ConflictResolution { get; private set; }
     public PolicyCondition Condition { get; private set; }
+    
+    //TODO: 
+    //Policy  default/template ve changable metasu ekle.
+    
 
 
     private Policy()
@@ -66,8 +71,15 @@ public class Policy : AuditedAggregateRoot<Guid>
             SetDefaultEvaluationOrder();
             return;
         }
+        
+#pragma warning disable CS8604 // Possible null reference argument.
+        var invalidOrders = evaluationOrder.Except(PolicyConsts.DefaultEvaluationOrder).ToArray();
+#pragma warning restore CS8604 // Possible null reference argument.
+        if (invalidOrders.Any())
+        {
+            throw new ArgumentException($"Invalid evaluation order types: {string.Join(", ", invalidOrders)}");
+        }
 
-        //TODO: Evaluation order'da olmayan bir type handle et.
         EvaluationOrder = evaluationOrder;
     }
 
@@ -77,8 +89,8 @@ public class Policy : AuditedAggregateRoot<Guid>
     }
 
     public void UpdateCondition(
-        ObjectDictionary context,
-        ObjectDictionary attributes,
+        ObjectDictionary? context,
+        ObjectDictionary? attributes,
         string[]? roles = null,
         string[]? rules = null,
         PolicyTime? time = null

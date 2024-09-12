@@ -9,6 +9,13 @@ using BBT.Prism.Uow;
 
 namespace BBT.Resource.Policies;
 
+/*
+ *
+ *Execution true => policy deny ise 403
+ *Execution false => policy deny ise 200 
+ * 
+ */
+
 public class PoliciesAppService(
     IServiceProvider serviceProvider,
     IUnitOfWork unitOfWork,
@@ -91,7 +98,7 @@ public class PoliciesAppService(
             input.Condition.Rules,
             time);
 
-        await policyRepository.InsertAsync(policy, cancellationToken);
+        await policyRepository.UpdateAsync(policy, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return ObjectMapper.Map<Policy, PolicyDto>(policy);
     }

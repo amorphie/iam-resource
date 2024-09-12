@@ -12,7 +12,7 @@ public class PolicyTime : ValueObject
         //For ORM
     }
     
-    public PolicyTime(TimeOnly start, TimeOnly end, string timezone)
+    public PolicyTime(TimeOnly start, TimeOnly end, string timezone = PolicyConsts.DefaultTimezone)
     {
         if (timezone.IsNullOrEmpty())
         {

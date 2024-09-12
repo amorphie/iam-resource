@@ -4,11 +4,11 @@ namespace BBT.Resource.Policies;
 
 public class PolicyConditionDto
 {
-    public string[] Roles { get; set; }
+    public string[]? Roles { get; set; }
     public PolicyTimeDto? Time { get; set; }
-    public string[] Rules { get; set; }
-    public ObjectDictionary Context { get; set; }
-    public ObjectDictionary Attributes { get; set; }
+    public string[]? Rules { get; set; }
+    public ObjectDictionary? Context { get; set; }
+    public ObjectDictionary? Attributes { get; set; }
 }
 
 public class PolicyTimeDto
