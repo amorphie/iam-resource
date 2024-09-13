@@ -6,7 +6,8 @@ namespace BBT.Resource.Resources.Authorize;
 public enum CheckAuthorizeType
 {
     Rule,
-    Privilege
+    Privilege,
+    Policy
 }
 
 public interface ICheckAuthorizeFactory
@@ -23,6 +24,7 @@ public class CheckAuthorizeFactory(IServiceProvider serviceProvider)
         {
             CheckAuthorizeType.Rule => serviceProvider.GetRequiredService<CheckAuthorizeByRule>(),
             CheckAuthorizeType.Privilege => serviceProvider.GetRequiredService<CheckAuthorizeByPrivilege>(),
+            CheckAuthorizeType.Policy => serviceProvider.GetRequiredService<CheckAuthorizeByPolicy>(),
             _ => throw new ArgumentException("Invalid CheckAuthorizeType", nameof(type))
         };
     }

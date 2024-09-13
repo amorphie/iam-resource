@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Elastic.Apm.Api;
 using Newtonsoft.Json;
 
-namespace BBT.Resource.Resources.Authorize;
+namespace BBT.Resource.PolicyEngine.Rules;
 
 public static class Utils
 {
@@ -94,28 +89,28 @@ public static class Utils
 
     public static CallApiResponse CallApiGet(string url)
     {
-        return CallApi(url, null, ResourceType.GET, null);
+        return CallApi(url, null, RuleType.GET, null);
     }
 
     public static CallApiResponse CallApiGet(string url, dynamic header)
     {
-        return CallApi(url, null, ResourceType.GET, header);
+        return CallApi(url, null, RuleType.GET, header);
     }
 
     public static CallApiResponse CallApiPost(string url, dynamic body)
     {
-        return CallApi(url, body, ResourceType.POST, null);
+        return CallApi(url, body, RuleType.POST, null);
     }
 
     public static CallApiResponse CallApiPost(string url, dynamic body, dynamic header)
     {
-        return CallApi(url, body, ResourceType.POST, header);
+        return CallApi(url, body, RuleType.POST, header);
     }
 
     private static CallApiResponse CallApi(
         string url,
         dynamic body,
-        ResourceType httpMethodType,
+        RuleType httpMethodType,
         dynamic? header = null)
     {
         var apiClientService = new HttpClientService();

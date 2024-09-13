@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Dynamic;
 using Newtonsoft.Json.Linq;
 
-namespace BBT.Resource.Resources.Authorize;
+namespace BBT.Resource.PolicyEngine.Rules;
 
-public static class AuthorizeHelper
+internal static class RuleHelper
 {
     public static Dictionary<string, object> ToDictionary(JObject jObject)
     {

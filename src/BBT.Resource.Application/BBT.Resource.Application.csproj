@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BBT.Resource.Domain\BBT.Resource.Domain.csproj" />
     <ProjectReference Include="..\BBT.Resource.Application.Contracts\BBT.Resource.Application.Contracts.csproj" />
+    <ProjectReference Include="..\BBT.Resource.PolicyEngine\BBT.Resource.PolicyEngine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BBT.Prism.AutoMapper" Version="1.1.5-rc.3" />

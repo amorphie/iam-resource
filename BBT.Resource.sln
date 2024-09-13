@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBT.Resource.Application.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBT.Resource.EntityFrameworkCore.Tests", "test\BBT.Resource.EntityFrameworkCore.Tests\BBT.Resource.EntityFrameworkCore.Tests.csproj", "{F688F09D-8852-4020-82AC-6AF7921E6FB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBT.Resource.PolicyEngine", "src\BBT.Resource.PolicyEngine\BBT.Resource.PolicyEngine.csproj", "{D090AAF4-BD8C-46D5-B785-AC12FD33C8EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BBT.Resource.PolicyEngine.Tests", "test\BBT.Resource.PolicyEngine.Tests\BBT.Resource.PolicyEngine.Tests.csproj", "{90CB05B5-2A54-4CA6-94FD-893B22EBEB14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +50,8 @@ Global
 		{0582A8EA-CAE5-4268-86C9-6D7DF85E2E02} = {A7D7410B-EB3D-46B7-BF35-983B54B19F2D}
 		{55858308-A7F6-4543-9C85-A020B4D90C38} = {A7D7410B-EB3D-46B7-BF35-983B54B19F2D}
 		{F688F09D-8852-4020-82AC-6AF7921E6FB6} = {A7D7410B-EB3D-46B7-BF35-983B54B19F2D}
+		{D090AAF4-BD8C-46D5-B785-AC12FD33C8EE} = {AD5BF23D-6F3D-451D-96D3-D06CD80E3DEF}
+		{90CB05B5-2A54-4CA6-94FD-893B22EBEB14} = {A7D7410B-EB3D-46B7-BF35-983B54B19F2D}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{639F7397-A6CD-44CB-B46E-843739098E52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -88,5 +94,13 @@ Global
 		{F688F09D-8852-4020-82AC-6AF7921E6FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F688F09D-8852-4020-82AC-6AF7921E6FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F688F09D-8852-4020-82AC-6AF7921E6FB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D090AAF4-BD8C-46D5-B785-AC12FD33C8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D090AAF4-BD8C-46D5-B785-AC12FD33C8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D090AAF4-BD8C-46D5-B785-AC12FD33C8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D090AAF4-BD8C-46D5-B785-AC12FD33C8EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90CB05B5-2A54-4CA6-94FD-893B22EBEB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90CB05B5-2A54-4CA6-94FD-893B22EBEB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90CB05B5-2A54-4CA6-94FD-893B22EBEB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90CB05B5-2A54-4CA6-94FD-893B22EBEB14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

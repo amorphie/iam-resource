@@ -10,7 +10,7 @@ using BBT.Prism.Uow;
 namespace BBT.Resource.Policies;
 
 /*
- *
+ * TODO: 
  *Execution true => policy deny ise 403
  *Execution false => policy deny ise 200 
  * 

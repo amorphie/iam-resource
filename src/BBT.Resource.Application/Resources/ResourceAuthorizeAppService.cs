@@ -19,6 +19,10 @@ public class ResourceAuthorizeAppService(
         {
             checkType = CheckAuthorizeType.Rule;
         }
+        else if (type != null && type.Equals("Policy", StringComparison.OrdinalIgnoreCase))
+        {
+            checkType = CheckAuthorizeType.Policy;
+        }
         else
         {
             checkType = CheckAuthorizeType.Privilege;

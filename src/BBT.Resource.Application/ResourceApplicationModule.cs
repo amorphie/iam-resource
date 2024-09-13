@@ -3,6 +3,7 @@ using BBT.Prism.AutoMapper;
 using BBT.Prism.Mapper;
 using BBT.Prism.Modularity;
 using BBT.Resource.Policies;
+using BBT.Resource.PolicyEngine;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
 using BBT.Resource.Resources.Authorize;
@@ -16,7 +17,8 @@ namespace BBT.Resource;
     typeof(ResourceDomainModule),
     typeof(ResourceApplicationContractsModule),
     typeof(PrismDddApplicationModule),
-    typeof(PrismAutoMapperModule)
+    typeof(PrismAutoMapperModule),
+    typeof(PolicyEngineModule)
 )]
 public class ResourceApplicationModule : PrismModule
 {
@@ -48,6 +50,7 @@ public class ResourceApplicationModule : PrismModule
 
         context.Services.AddTransient<CheckAuthorizeByRule>();
         context.Services.AddTransient<CheckAuthorizeByPrivilege>();
+        context.Services.AddTransient<CheckAuthorizeByPolicy>();
         context.Services.AddSingleton<ICheckAuthorizeFactory, CheckAuthorizeFactory>();
     }
 }

@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BBT.Resource.Extensions;
+using BBT.Resource.PolicyEngine.Rules;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -20,7 +21,7 @@ public class CheckAuthorizeByRule(
     IHttpContextAccessor httpContextAccessor,
     IResourceRepository resourceRepository,
     IOptions<CheckAuthorizeOptions> authorizeOptions,
-    ILogger<CheckAuthorizeByRule> logger) : ICheckAuthorize
+    IRuleEngine ruleEngine) : ICheckAuthorize
 {
     private CheckAuthorizeOptions AuthorizeOptions { get; } = authorizeOptions.Value;
 
@@ -46,16 +47,29 @@ public class CheckAuthorizeByRule(
         {
             if (AuthorizeOptions.AllowEmptyPrivilege)
             {
-                return output.SetResult(403, "Allow empty privilege active.");
+                return output.SetResult(200, "Allow empty privilege active.");
             }
 
             return output.SetResult(403, "Resource rules not found.");
         }
 
-        var ruleParams = new List<RuleParameter>();
-        SetRuleParameterList(resource, url, data, httpContext, ruleParams);
-
-        var resultList = await ExecuteRules(ruleParams, resourceRules);
+        var resultList = await ruleEngine.ExecuteRules(new RuleContext()
+        {
+            AllHeaders = httpContext.Request.Headers
+                .ToDictionary(
+                    h => h.Key,
+                    h => h.Value.ToString()
+                ),
+            Data = data,
+            RequestUrl = url,
+            UrlPattern = resource.Url,
+            RuleDefinitions = resourceRules
+                .Select(s =>
+                    new RuleDefinition(
+                        s.Rule.Name,
+                        s.Rule.Expression)
+                ).ToList()
+        });
 
         if (resultList.Any(t => t.IsSuccess == false))
         {
@@ -63,99 +77,5 @@ public class CheckAuthorizeByRule(
         }
 
         return output.SetResult(200, "SUCCESS");
-    }
-
-    private void SetRuleParameterList(
-        Resource resource,
-        string url,
-        string? data,
-        HttpContext httpContext,
-        List<RuleParameter> ruleParams
-    )
-    {
-        dynamic header = new ExpandoObject();
-
-        foreach (var requestHeader in httpContext.Request.Headers)
-        {
-            ((IDictionary<string, object>)header).Add(requestHeader.Key.ToClean(), requestHeader.Value.ToString());
-        }
-
-        var ruleParamHeader = new RuleParameter("header", header);
-        ruleParams.Add(ruleParamHeader);
-
-        dynamic path = new ExpandoObject();
-        var match = Regex.Match(url, resource.Url);
-        if (match.Success)
-        {
-            foreach (Group pathVariable in match.Groups)
-            {
-                ((IDictionary<string, object>)path).Add($"var{pathVariable.Name}", pathVariable.Value);
-            }
-        }
-
-        var ruleParamPath = new RuleParameter("path", path);
-        ruleParams.Add(ruleParamPath);
-
-        var bodyParamList = new Dictionary<string, object>();
-
-        if (!string.IsNullOrEmpty(data))
-        {
-            var jsonObject = JsonConvert.DeserializeObject<JObject>(data);
-            if (jsonObject != null) bodyParamList = AuthorizeHelper.ToDictionary(jsonObject);
-        }
-
-        dynamic bodyObject = AuthorizeHelper.ToExpandoObject(bodyParamList);
-
-        var ruleParamBody = new RuleParameter("body", bodyObject);
-
-        ruleParams.Add(ruleParamBody);
-    }
-
-    private async ValueTask<List<RuleResultTree>> ExecuteRules(
-        List<RuleParameter> ruleParameters,
-        List<ResourceRuleModel> resourceRules)
-    {
-        var ruleDefinitions = resourceRules
-            .Select(s =>
-                new RuleDefinition(s.Rule.Name, s.Rule.Expression)
-            ).ToList();
-
-        var workflowRuleDefinition = new WorkflowRuleDefinition(
-            "workflow",
-            ruleDefinitions.ToArray()
-        );
-
-        var workflowRules = new[] { JsonConvert.SerializeObject(workflowRuleDefinition) };
-
-        var reSettings = new ReSettings
-        {
-            CustomTypes = new Type[] { typeof(Utils) },
-        };
-
-        var rulesEngine = new RulesEngine.RulesEngine(workflowRules, reSettings);
-
-        var response = await rulesEngine.ExecuteAllRulesAsync(
-            workflowRuleDefinition.WorkflowName,
-            ruleParameters.ToArray()
-        );
-
-        var logRule = new StringBuilder();
-        logRule.AppendLine("Execution Rules:");
-        foreach (var responseItem in response)
-        {
-            if (responseItem.IsSuccess)
-            {
-                logRule.AppendLine($"- RuleName: {responseItem.Rule.RuleName}. Success: {responseItem.IsSuccess}");
-            }
-            else
-            {
-                logRule.AppendLine(
-                    $"RuleName: {responseItem.Rule.RuleName}. Success: {responseItem.IsSuccess}. ExceptionMessage: {responseItem.ExceptionMessage}");
-            }
-        }
-
-        logger.LogInformation(logRule.ToString());
-
-        return response;
     }
 }

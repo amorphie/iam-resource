@@ -17,8 +17,7 @@ namespace BBT.Resource.Resources.Authorize;
 public class CheckAuthorizeByPrivilege(
     IHttpContextAccessor httpContextAccessor,
     IResourceRepository resourceRepository,
-    IOptions<CheckAuthorizeOptions> authorizeOptions,
-    ILogger<CheckAuthorizeByRule> logger) : ICheckAuthorize
+    IOptions<CheckAuthorizeOptions> authorizeOptions) : ICheckAuthorize
 {
     private CheckAuthorizeOptions AuthorizeOptions { get; } = authorizeOptions.Value;
 
@@ -44,7 +43,7 @@ public class CheckAuthorizeByPrivilege(
         {
             if (AuthorizeOptions.AllowEmptyPrivilege)
             {
-                return output.SetResult(403, "Allow empty privilege active.");
+                return output.SetResult(200, "Allow empty privilege active.");
             }
 
             return output.SetResult(403, "Resource rules not found.");
@@ -125,12 +124,70 @@ public class CheckAuthorizeByPrivilege(
         if (!string.IsNullOrEmpty(data))
         {
             var jsonObject = JsonConvert.DeserializeObject<JObject>(data);
-            if (jsonObject != null) bodyParamList = AuthorizeHelper.ToDictionary(jsonObject);
+            if (jsonObject != null) bodyParamList = ToDictionary(jsonObject);
         }
 
         foreach (var body in bodyParamList)
         {
             ruleParams.Add($"{body}.{body.Key}", body.Value);
         }
+    }
+
+    private Dictionary<string, object> ToDictionary(JObject jObject)
+    {
+        var dictionary = new Dictionary<string, object>();
+
+        foreach (var property in jObject.Properties())
+        {
+            var value = property.Value;
+
+            switch (value.Type)
+            {
+                case JTokenType.Object:
+                    dictionary[property.Name] = ToDictionary((JObject)value);
+                    break;
+                case JTokenType.Array:
+                    dictionary[property.Name] = ToList((JArray)value);
+                    break;
+                default:
+                    var jValue = (JValue)value;
+                    if (jValue.Type == JTokenType.Integer || jValue.Type == JTokenType.Float)
+                    {
+                        dictionary[property.Name] = Convert.ToDouble(jValue.Value);
+                    }
+                    else
+                    {
+                        dictionary[property.Name] = jValue.Value;
+                    }
+
+                    break;
+            }
+        }
+
+        return dictionary;
+    }
+
+    private List<object> ToList(JArray jArray)
+    {
+        var list = new List<object>();
+
+        foreach (var item in jArray)
+        {
+            switch (item.Type)
+            {
+                case JTokenType.Object:
+                    list.Add(ToDictionary((JObject)item));
+                    break;
+                case JTokenType.Array:
+                    list.Add(ToList((JArray)item));
+                    break;
+                default:
+                    var value = ((JValue)item).Value;
+                    if (value != null) list.Add(value);
+                    break;
+            }
+        }
+
+        return list;
     }
 }

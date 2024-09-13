@@ -1,4 +1,4 @@
-namespace BBT.Resource.Resources.Authorize;
+namespace BBT.Resource.PolicyEngine.Rules;
 
 public class RuleDefinition(string name, string expression)
 {
