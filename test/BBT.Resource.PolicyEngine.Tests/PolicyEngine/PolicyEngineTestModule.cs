@@ -13,6 +13,6 @@ public class PolicyEngineTestModule : PrismModule
     public override void ConfigureServices(ModuleConfigurationContext context)
     {
         // Mock Service
-        context.Services.AddTransient<IUserStore, UserMockService>();
+        context.Services.AddTransient<IPermissionStore, PermissionMockService>();
     }
 }

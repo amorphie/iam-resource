@@ -6,7 +6,6 @@ namespace BBT.Resource;
     typeof(ResourceDomainModule),
     typeof(ResourceTestBaseModule)
 )]
-public class ResourceDomainTestModule: PrismModule
+public class ResourceDomainTestModule : PrismModule
 {
-    
 }

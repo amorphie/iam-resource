@@ -18,4 +18,7 @@ public interface IPolicyAppService : IApplicationService
         CancellationToken cancellationToken = default);
 
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<ListResultDto<EvaluationStepInfoDto>> GetEvaluationStepsAsync(CancellationToken cancellationToken = default);
+    Task<ListResultDto<ConflictResolutionInfoDto>> GetConflictResolutionsAsync(CancellationToken cancellationToken = default);
 }

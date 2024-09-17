@@ -6,7 +6,6 @@ internal sealed class AllowOverridesStrategy : IConflictResolutionStrategy
     {
         var result = new EvaluationResult();
         
-        // Eğer herhangi bir allow varsa, allow uygulanır
         var allowPolicy = evaluationResults.FirstOrDefault(r => r.IsAllowed);
         if (allowPolicy != null)
         {

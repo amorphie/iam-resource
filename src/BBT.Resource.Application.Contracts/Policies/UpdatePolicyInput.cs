@@ -18,6 +18,7 @@ public class UpdatePolicyInput : IValidatableObject
     public string Effect { get; set; }
 
     public string[]? Permissions { get; set; }
+    public string? PermissionProvider { get; set; }
     public string[]? EvaluationOrder { get; set; }
 
     [Required]
@@ -28,21 +29,34 @@ public class UpdatePolicyInput : IValidatableObject
     public string ConflictResolution { get; set; }
 
     public PolicyConditionDto? Condition { get; set; }
+    public bool Template { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         var validationErrors = new List<ValidationResult>();
         
-        // Condition ve Permissions aynı anda null olamaz.
         if (Condition == null && (Permissions == null || Permissions.Length == 0))
         {
-            validationErrors.Add(new ValidationResult("Condition or Permissions must be defined.", new[] { nameof(Condition), nameof(Permissions) }));
+            validationErrors.Add(new ValidationResult("Condition or Permissions must be defined.",
+                new[] { nameof(Condition), nameof(Permissions) }));
+        }
+
+        if (Permissions != null)
+        {
+            if (Permissions.Any())
+            {
+                if (PermissionProvider.IsNullOrEmpty())
+                {
+                    validationErrors.Add(new ValidationResult(
+                        "If there is a Permissions definition, PermissionProvider must be filled.",
+                        new[] { nameof(PermissionProvider) }));
+                }
+            }
         }
         
-        // Eğer Condition tanımlıysa, en az bir özelliğinin dolu olması gerekir.
         if (Condition != null)
         {
-            bool hasAnyConditionProperty = 
+            bool hasAnyConditionProperty =
                 (Condition.Roles != null && Condition.Roles.Length > 0) ||
                 Condition.Time != null ||
                 (Condition.Rules != null && Condition.Rules.Length > 0) ||
@@ -51,7 +65,8 @@ public class UpdatePolicyInput : IValidatableObject
 
             if (!hasAnyConditionProperty)
             {
-                validationErrors.Add(new ValidationResult("At least one property of Condition must be defined.", new[] { nameof(Condition) }));
+                validationErrors.Add(new ValidationResult("At least one property of Condition must be defined.",
+                    new[] { nameof(Condition) }));
             }
         }
 

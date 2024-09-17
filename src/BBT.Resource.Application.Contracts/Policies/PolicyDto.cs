@@ -15,6 +15,7 @@ public class PolicyListDto : EntityDto<Guid>, IHasCreatedAt, IHasModifyTime
     public ConflictResolution ConflictResolution { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? ModifiedAt { get; set; }
+    public bool Template { get; set; }
 }
 
 public class PolicyDto : PolicyListDto

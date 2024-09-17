@@ -27,6 +27,7 @@ public class EvaluationManagerTests : PolicyEngineTestBase<PolicyEngineTestModul
 
         var context = new UserRequestContext
         {
+            UrlPattern = "/api/test",
             Roles = new List<string> { "Admin" }
         };
 
@@ -54,6 +55,7 @@ public class EvaluationManagerTests : PolicyEngineTestBase<PolicyEngineTestModul
 
         var context = new UserRequestContext
         {
+            UrlPattern = "/api/test",
             Attributes = new Dictionary<string, string> { { "department", "HR" } }
         };
 
@@ -87,6 +89,7 @@ public class EvaluationManagerTests : PolicyEngineTestBase<PolicyEngineTestModul
 
         var context = new UserRequestContext
         {
+            UrlPattern = "/api/test",
             Time = DateTime.UtcNow.Date.AddHours(10) // 10:00 UTC
         };
 

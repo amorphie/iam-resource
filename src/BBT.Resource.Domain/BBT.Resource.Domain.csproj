@@ -1,16 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\common.props" />
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <RootNamespace>BBT.Resource</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BBT.Resource.Domain.Shared\BBT.Resource.Domain.Shared.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="BBT.Prism.Data.Seeding" Version="1.1.5-rc.3" />
-    <PackageReference Include="BBT.Prism.Ddd.Domain" Version="1.1.5-rc.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)" />
-  </ItemGroup>
+    <Import Project="..\..\common.props"/>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <RootNamespace>BBT.Resource</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\BBT.Resource.Domain.Shared\BBT.Resource.Domain.Shared.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="BBT.Prism.Data.Seeding" Version="1.1.5-rc.3"/>
+        <PackageReference Include="BBT.Prism.Ddd.Domain" Version="1.1.5-rc.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftPackageVersion)"/>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.Middleware" Version="$(MicrosoftPackageVersion)"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>BBT.Resource.Domain.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project>

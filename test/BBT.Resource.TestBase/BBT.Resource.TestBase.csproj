@@ -1,23 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\common.props" />
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <RootNamespace>BBT.Resource</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="BBT.Prism.Data.Seeding" Version="1.1.5-rc.3" />
-    <PackageReference Include="BBT.Prism.TestBase" Version="1.1.5-rc.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkPackageVersion)" />
-    <PackageReference Include="Moq" Version="4.20.70" />
-    <PackageReference Include="NSubstitute" Version="$(NSubstitutePackageVersion)" />
-    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="$(NSubstituteAnalyzersPackageVersion)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Shouldly" Version="$(ShouldlyPackageVersion)" />
-    <PackageReference Include="xunit" Version="$(xunitPackageVersion)" />
-    <PackageReference Include="xunit.extensibility.execution" Version="$(xunitPackageVersion)" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(xunitRunnerPackageVersion)" />
-  </ItemGroup>
+    <Import Project="..\..\common.props"/>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <RootNamespace>BBT.Resource</RootNamespace>
+        <DefineConstants>DEBUG;TEST</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="BBT.Prism.Data.Seeding" Version="1.1.5-rc.3"/>
+        <PackageReference Include="BBT.Prism.TestBase" Version="1.1.5-rc.3"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkPackageVersion)"/>
+        <PackageReference Include="Moq" Version="4.20.70"/>
+        <PackageReference Include="NSubstitute" Version="$(NSubstitutePackageVersion)"/>
+        <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="$(NSubstituteAnalyzersPackageVersion)">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Shouldly" Version="$(ShouldlyPackageVersion)"/>
+        <PackageReference Include="xunit" Version="$(xunitPackageVersion)"/>
+        <PackageReference Include="xunit.extensibility.execution" Version="$(xunitPackageVersion)"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="$(xunitRunnerPackageVersion)"/>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.Middleware" Version="$(MicrosoftPackageVersion)"/>
+    </ItemGroup>
 </Project>

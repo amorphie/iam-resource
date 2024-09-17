@@ -24,6 +24,120 @@ namespace BBT.Resource.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("BBT.Resource.Permissions.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ApplicationId")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CreatedByBehalfOf")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("ModifiedAt");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ModifiedBy");
+
+                    b.Property<Guid?>("ModifiedByBehalfOf")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ModifiedByBehalfOf");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(180)
+                        .HasColumnType("character varying(180)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permissions", (string)null);
+                });
+
+            modelBuilder.Entity("BBT.Resource.Permissions.PermissionGrant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ApplicationId")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(180)
+                        .HasColumnType("character varying(180)");
+
+                    b.Property<string>("ProviderKey")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)");
+
+                    b.Property<string>("ProviderName")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId", "ClientId", "Name", "ProviderName", "ProviderKey")
+                        .IsUnique();
+
+                    b.ToTable("PermissionGrants", (string)null);
+                });
+
+            modelBuilder.Entity("BBT.Resource.Permissions.PermissionTranslation", b =>
+                {
+                    b.Property<string>("Language")
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
+
+                    b.Property<Guid>("PermissionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(180)
+                        .HasColumnType("character varying(180)");
+
+                    b.HasKey("Language", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("PermissionTranslations", (string)null);
+                });
+
             modelBuilder.Entity("BBT.Resource.Policies.Policy", b =>
                 {
                     b.Property<Guid>("Id")
@@ -81,11 +195,18 @@ namespace BBT.Resource.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("PermissionProvider")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
                     b.Property<string[]>("Permissions")
                         .HasColumnType("text[]");
 
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Template")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -791,6 +912,15 @@ namespace BBT.Resource.Migrations
                     b.ToTable("Rules", (string)null);
                 });
 
+            modelBuilder.Entity("BBT.Resource.Permissions.PermissionTranslation", b =>
+                {
+                    b.HasOne("BBT.Resource.Permissions.Permission", null)
+                        .WithMany("Translations")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BBT.Resource.Policies.Policy", b =>
                 {
                     b.OwnsOne("BBT.Resource.Policies.PolicyCondition", "Condition", b1 =>
@@ -837,7 +967,8 @@ namespace BBT.Resource.Migrations
                                     b2.Property<string>("Timezone")
                                         .IsRequired()
                                         .HasMaxLength(10)
-                                        .HasColumnType("character varying(10)");
+                                        .HasColumnType("character varying(10)")
+                                        .HasColumnName("Timezone");
 
                                     b2.HasKey("PolicyConditionPolicyId");
 
@@ -984,6 +1115,11 @@ namespace BBT.Resource.Migrations
                         .HasForeignKey("ScopeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BBT.Resource.Permissions.Permission", b =>
+                {
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("BBT.Resource.Resources.Resource", b =>

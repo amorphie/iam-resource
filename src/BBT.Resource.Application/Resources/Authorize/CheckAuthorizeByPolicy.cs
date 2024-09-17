@@ -1,9 +1,13 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BBT.Prism.Mapper;
 using BBT.Resource.Extensions;
+using BBT.Resource.Policies;
 using BBT.Resource.PolicyEngine;
-using BBT.Resource.PolicyEngine.Rules;
+using BBT.Resource.Rules;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,6 +19,9 @@ public class CheckAuthorizeByPolicy(
     IResourceRepository resourceRepository,
     IPolicyEngine policyEngine,
     IOptions<CheckAuthorizeOptions> authorizeOptions,
+    IObjectMapper mapper,
+    IRuleRepository ruleRepository,
+    PolicyMergeManager policyMergeManager,
     ILogger<CheckAuthorizeByPolicy> logger) : ICheckAuthorize
 {
     private CheckAuthorizeOptions AuthorizeOptions { get; } = authorizeOptions.Value;
@@ -47,6 +54,22 @@ public class CheckAuthorizeByPolicy(
             return output.SetResult(403, "Resource policy not found.");
         }
 
+        var mergedPolicies = new List<PolicyDefinition>();
+        foreach (var resourcePolicy in resourcePolicies)
+        {
+            var mergedPolicy = await policyMergeManager.GetMergedPolicyAsync(
+                mapper.Map<Policy, PolicyDefinition>(resourcePolicy.Policy),
+                cancellationToken);
+            mergedPolicies.Add(mergedPolicy);
+        }
+
+        var policyDefinitions = mergedPolicies
+            .OrderBy(o => o.Priority)
+            .Select(s => (IPolicy)s)
+            .ToList();
+
+        await BindRulesAsync(policyDefinitions, resourcePolicies, cancellationToken);
+
         var userContext = UserRequestContextBinder.Bind(
             httpContext: httpContext,
             urlPattern: resource.Url,
@@ -55,9 +78,7 @@ public class CheckAuthorizeByPolicy(
 
         var result =
             await policyEngine.EvaluatePoliciesAsync(
-                resourcePolicies
-                    .Select(s => (IPolicy)s)
-                    .ToList(),
+                policyDefinitions,
                 userContext);
         // result.GetDetailedReport();
         if (result.IsAllowed)
@@ -70,5 +91,25 @@ public class CheckAuthorizeByPolicy(
         }
 
         return output;
+    }
+
+    private async Task BindRulesAsync(
+        List<IPolicy> policyDefinitions,
+        List<ResourcePolicyModel> resourcePolicies,
+        CancellationToken cancellationToken = default)
+    {
+        foreach (var policyDefinition in policyDefinitions)
+        {
+            var policy = resourcePolicies.FirstOrDefault(p => p.Policy.Id.ToString() == policyDefinition.Id);
+            if (policy != null)
+            {
+                var ruleIds = policy.Policy.Condition.Rules
+                    .Select(Guid.Parse)
+                    .ToArray();
+
+                var rules = await ruleRepository.GetByIdsAsync(ruleIds, cancellationToken);
+                policyDefinition.Conditions.Rules = rules.Select(s => new RuleCondition(s.Name, s.Expression)).ToList();
+            }
+        }
     }
 }

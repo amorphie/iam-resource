@@ -1,25 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BBT.Prism.Application.Dtos;
 using BBT.Prism.Application.Services;
 using BBT.Prism.Domain.Repositories;
 using BBT.Prism.Uow;
+using BBT.Resource.PolicyEngine.ConflictResolutions.Options;
+using BBT.Resource.PolicyEngine.Evaluations.Options;
+using Microsoft.Extensions.Options;
 
 namespace BBT.Resource.Policies;
-
-/*
- * TODO: 
- *Execution true => policy deny ise 403
- *Execution false => policy deny ise 200 
- * 
- */
 
 public class PoliciesAppService(
     IServiceProvider serviceProvider,
     IUnitOfWork unitOfWork,
-    IPolicyRepository policyRepository)
+    IPolicyRepository policyRepository,
+    IOptions<EvaluationOptions> evaluationOptions,
+    IOptions<ConflictResolutionOptions> conflictResolutionOptions)
     : ApplicationService(serviceProvider), IPolicyAppService
 {
     public async Task<PagedResultDto<PolicyListDto>> GetAllAsync(PagedPolicyInput input,
@@ -53,21 +52,22 @@ public class PoliciesAppService(
             ParentId = input.ParentId
         };
 
-        policy.SetPermissions(input.Permissions);
+        policy.SetTemplate(input.Template);
+        policy.SetPermissions(input.PermissionProvider, input.Permissions);
         policy.SetEvaluationOrder(input.EvaluationOrder);
 
         PolicyTime? time = null;
 
-        if (input.Condition.Time != null)
+        if (input.Condition?.Time != null)
         {
             time = new PolicyTime(input.Condition.Time.Start, input.Condition.Time.End, input.Condition.Time.Timezone);
         }
 
         policy.UpdateCondition(
-            input.Condition.Context,
-            input.Condition.Attributes,
-            input.Condition.Roles,
-            input.Condition.Rules,
+            input.Condition?.Context,
+            input.Condition?.Attributes,
+            input.Condition?.Roles,
+            input.Condition?.Rules,
             time);
 
         await policyRepository.InsertAsync(policy, cancellationToken);
@@ -75,27 +75,29 @@ public class PoliciesAppService(
         return ObjectMapper.Map<Policy, PolicyDto>(policy);
     }
 
-    public async Task<PolicyDto> UpdateAsync(Guid id, UpdatePolicyInput input, CancellationToken cancellationToken = default)
+    public async Task<PolicyDto> UpdateAsync(Guid id, UpdatePolicyInput input,
+        CancellationToken cancellationToken = default)
     {
         var policy = await policyRepository.GetAsync(id, true, cancellationToken);
+        policy.SetTemplate(input.Template);
         policy.SetName(input.Name);
         policy.SetPriority(input.Priority);
         policy.ParentId = input.ParentId;
-        policy.SetPermissions(input.Permissions);
+        policy.SetPermissions(input.PermissionProvider, input.Permissions);
         policy.SetEvaluationOrder(input.EvaluationOrder);
 
         PolicyTime? time = null;
 
-        if (input.Condition.Time != null)
+        if (input.Condition?.Time != null)
         {
             time = new PolicyTime(input.Condition.Time.Start, input.Condition.Time.End, input.Condition.Time.Timezone);
         }
 
         policy.UpdateCondition(
-            input.Condition.Context,
-            input.Condition.Attributes,
-            input.Condition.Roles,
-            input.Condition.Rules,
+            input.Condition?.Context,
+            input.Condition?.Attributes,
+            input.Condition?.Roles,
+            input.Condition?.Rules,
             time);
 
         await policyRepository.UpdateAsync(policy, cancellationToken);
@@ -107,5 +109,28 @@ public class PoliciesAppService(
     {
         await policyRepository.DeleteAsync(id, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<ListResultDto<EvaluationStepInfoDto>> GetEvaluationStepsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var list = evaluationOptions.Value.Steps.Select(s => new EvaluationStepInfoDto()
+        {
+            Name = s.Key,
+            DisplayName = s.Value.DisplayName
+        }).ToList();
+        return Task.FromResult(new ListResultDto<EvaluationStepInfoDto>(list));
+    }
+
+    public Task<ListResultDto<ConflictResolutionInfoDto>> GetConflictResolutionsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var list = conflictResolutionOptions.Value.Strategies.Select(s => new ConflictResolutionInfoDto()
+        {
+            Name = s.Key,
+            DisplayName = s.Value.DisplayName,
+            Description = s.Value.Description
+        }).ToList();
+        return Task.FromResult(new ListResultDto<ConflictResolutionInfoDto>(list));
     }
 }

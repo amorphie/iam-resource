@@ -46,6 +46,7 @@ public class PolicyEngineTests: PolicyEngineTestBase<PolicyEngineTestModule>
 
         var context = new UserRequestContext
         {
+            UrlPattern = "/api/user/test",
             Roles = new List<string> { "Admin" }
         };
         
@@ -92,6 +93,7 @@ public class PolicyEngineTests: PolicyEngineTestBase<PolicyEngineTestModule>
 
         var context = new UserRequestContext
         {
+            UrlPattern = "/api/user/test",
             Roles = new List<string> { "User" }
         };
         
@@ -138,6 +140,7 @@ public class PolicyEngineTests: PolicyEngineTestBase<PolicyEngineTestModule>
 
         var context = new UserRequestContext
         {
+            UrlPattern = "/api/user/test",
             Roles = new List<string> { "Admin" }
         };
         

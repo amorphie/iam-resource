@@ -1,5 +1,6 @@
 using System;
 using BBT.Prism.EntityFrameworkCore;
+using BBT.Resource.Permissions;
 using BBT.Resource.Policies;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
@@ -36,6 +37,10 @@ public class ResourceDbContext(
     
     public virtual DbSet<Policy> Policies { get; set; }
     public virtual DbSet<ResourcePolicy> ResourcePolicies { get; set; }
+    
+    public virtual DbSet<Permission> Permissions { get; set; }
+    public virtual DbSet<PermissionTranslation> PermissionTranslations { get; set; }
+    public virtual DbSet<PermissionGrant> PermissionGrants { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {

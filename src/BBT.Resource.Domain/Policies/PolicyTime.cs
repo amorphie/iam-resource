@@ -21,7 +21,7 @@ public class PolicyTime : ValueObject
 
         Start = start;
         End = end;
-        Timezone = Check.NotNullOrEmpty(timezone, nameof(timezone), PolicyConsts.MaxTimezoneLength);
+        Timezone = Check.NotNullOrEmpty(timezone, nameof(Timezone), PolicyConsts.MaxTimezoneLength);
     }
 
     public TimeOnly Start { get; private set; }

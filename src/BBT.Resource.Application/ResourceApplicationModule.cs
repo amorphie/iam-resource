@@ -2,8 +2,10 @@ using BBT.Prism.Application;
 using BBT.Prism.AutoMapper;
 using BBT.Prism.Mapper;
 using BBT.Prism.Modularity;
+using BBT.Resource.Permissions;
 using BBT.Resource.Policies;
 using BBT.Resource.PolicyEngine;
+using BBT.Resource.PolicyEngine.Evaluations;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
 using BBT.Resource.Resources.Authorize;
@@ -36,6 +38,7 @@ public class ResourceApplicationModule : PrismModule
         context.Services.AddTransient<MultiLingualRoleGroupObjectMapper>();
         context.Services.AddTransient<MultiLingualRoleObjectMapper>();
         context.Services.AddTransient<MultiLingualResourceObjectMapper>();
+        context.Services.AddTransient<MultiLingualPermissionObjectMapper>();
 
         context.Services.AddTransient<IResourceGroupAppService, ResourceGroupAppService>();
         context.Services.AddTransient<IResourceAppService, ResourceAppService>();
@@ -52,5 +55,9 @@ public class ResourceApplicationModule : PrismModule
         context.Services.AddTransient<CheckAuthorizeByPrivilege>();
         context.Services.AddTransient<CheckAuthorizeByPolicy>();
         context.Services.AddSingleton<ICheckAuthorizeFactory, CheckAuthorizeFactory>();
+
+        context.Services.AddTransient<IPermissionAppService, PermissionAppService>();
+        context.Services.AddTransient<IPermissionStore, ExternalPermissionStore>();
+        context.Services.AddTransient<PolicyMergeManager>();
     }
 }

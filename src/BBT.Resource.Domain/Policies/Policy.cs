@@ -12,16 +12,13 @@ public class Policy : AuditedAggregateRoot<Guid>
     public Guid? ParentId { get; set; }
     public Effect Effect { get; private set; }
     public string[]? Permissions { get; private set; }
+    public string? PermissionProvider { get; private set; }
     public string[]? EvaluationOrder { get; private set; }
     public int Priority { get; private set; }
     public ConflictResolution ConflictResolution { get; private set; }
     public PolicyCondition Condition { get; private set; }
+    public bool Template { get; private set; }
     
-    //TODO: 
-    //Policy  default/template ve changable metasu ekle.
-    
-
-
     private Policy()
     {
         //For ORM
@@ -40,11 +37,17 @@ public class Policy : AuditedAggregateRoot<Guid>
         SetPriority(priority);
         ConflictResolution = ConflictResolution.NA;
         SetDefaultEvaluationOrder();
+        Template = false;
+    }
+
+    public void SetTemplate(bool template)
+    {
+        Template = template;
     }
 
     public void SetName(string name)
     {
-        Name = Check.NotNullOrEmpty(name, nameof(name), PolicyConsts.MaxNameLength);
+        Name = Check.NotNullOrEmpty(name, nameof(Name), PolicyConsts.MaxNameLength);
     }
 
     public void SetPriority(int priority)
@@ -59,8 +62,9 @@ public class Policy : AuditedAggregateRoot<Guid>
         Priority = priority;
     }
 
-    public void SetPermissions(string[]? permissions)
+    public void SetPermissions(string? permissionProvider, string[]? permissions)
     {
+        PermissionProvider = Check.Length(permissionProvider, nameof(PermissionProvider), PolicyConsts.MaxProviderNameLength);
         Permissions = permissions;
     }
 
@@ -71,7 +75,7 @@ public class Policy : AuditedAggregateRoot<Guid>
             SetDefaultEvaluationOrder();
             return;
         }
-        
+
 #pragma warning disable CS8604 // Possible null reference argument.
         var invalidOrders = evaluationOrder.Except(PolicyConsts.DefaultEvaluationOrder).ToArray();
 #pragma warning restore CS8604 // Possible null reference argument.

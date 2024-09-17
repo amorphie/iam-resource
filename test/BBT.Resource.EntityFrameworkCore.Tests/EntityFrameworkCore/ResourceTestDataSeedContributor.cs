@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BBT.Prism.Data.Seeding;
 using BBT.Prism.Uow;
+using BBT.Resource.Permissions;
 using BBT.Resource.Policies;
 using BBT.Resource.Resources;
 using BBT.Resource.Roles;
@@ -19,11 +20,17 @@ public class ResourceTestDataSeedContributor(
     IRoleRepository roleRepository,
     IResourceGroupRepository resourceGroupRepository,
     IPolicyRepository policyRepository,
-    IResourceRepository resourceRepository) : IDataSeedContributor
+    IResourceRepository resourceRepository,
+    IPermissionRepository permissionRepository,
+    IPermissionGrantRepository permissionGrantRepository) : IDataSeedContributor
 {
     public async Task SeedAsync(DataSeedContext context)
     {
         /* Seed additional test data... */
+        await permissionRepository.InsertManyAsync(GetPermissions());
+
+        await permissionGrantRepository.InsertManyAsync(GetPermissionGrants());
+
         await ruleRepository.InsertManyAsync(GetRules());
 
         await roleDefinitionRepository.InsertManyAsync(GetRoleDefinitions());
@@ -38,6 +45,101 @@ public class ResourceTestDataSeedContributor(
 
         await resourceRepository.InsertManyAsync(GetResources());
         await unitOfWork.SaveChangesAsync();
+    }
+
+    private List<Permission> GetPermissions()
+    {
+        return
+        [
+            //Identities
+            new Permission(
+                testData.PermissionId_1,
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_1),
+            //Identities.Users
+            new Permission(
+                testData.PermissionId_2,
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_2,
+                testData.PermissionId_1),
+            //Identities.Users.Create
+            new Permission(
+                testData.PermissionId_3,
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_3,
+                testData.PermissionId_2),
+            //Identities.Users.Update
+            new Permission(
+                testData.PermissionId_4,
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_4,
+                testData.PermissionId_2),
+            //Identities.Users.Roles
+            new Permission(
+                testData.PermissionId_5,
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_5,
+                testData.PermissionId_2),
+            //Identities.Users.Roles.Assign
+            new Permission(
+                testData.PermissionId_6,
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_6,
+                testData.PermissionId_5),
+        ];
+    }
+
+    private List<PermissionGrant> GetPermissionGrants()
+    {
+        return
+        [
+            new PermissionGrant(
+                Guid.NewGuid(),
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_1,
+                testData.ProviderName,
+                testData.ProviderKey
+            ),
+            new PermissionGrant(
+                Guid.NewGuid(),
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_2,
+                testData.ProviderName,
+                testData.ProviderKey
+            ),
+            new PermissionGrant(
+                Guid.NewGuid(),
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_3,
+                testData.ProviderName,
+                testData.ProviderKey
+            ),
+            new PermissionGrant(
+                Guid.NewGuid(),
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_4,
+                testData.ProviderName,
+                testData.ProviderKey
+            ),
+            new PermissionGrant(
+                Guid.NewGuid(),
+                testData.ApplicationId,
+                testData.ClientId,
+                testData.PermissionName_5,
+                testData.ProviderName,
+                testData.ProviderKey
+            )
+        ];
     }
 
     private List<Rule> GetRules()
@@ -106,7 +208,7 @@ public class ResourceTestDataSeedContributor(
     private List<Policy> GetPolicies()
     {
         var policy_1 = new Policy(testData.PolicyId_1, "Policy_1", Effect.Allow, 1);
-        policy_1.SetPermissions(["AD.Management", "AD.Organization.Management"]);
+        policy_1.SetPermissions("U", ["AD.Management", "AD.Organization.Management"]);
         policy_1.UpdateCondition(
             context: new ObjectDictionary(),
             attributes: new ObjectDictionary()

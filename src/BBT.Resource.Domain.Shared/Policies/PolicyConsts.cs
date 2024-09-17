@@ -7,6 +7,7 @@ public class PolicyConsts
     public const int MaxPriorityLimit = 99999;
     public const int MaxEffectLength = 1;
     public const int MaxConflictResolutionLength = 1;
+    public const int MaxProviderNameLength = 10;
     public const string DefaultTimezone = "UTC";
     public static readonly string[] DefaultEvaluationOrder = ["roles", "attributes", "context", "rules", "time"];
     public static readonly string[] ValidEffects = ["A", "D"];

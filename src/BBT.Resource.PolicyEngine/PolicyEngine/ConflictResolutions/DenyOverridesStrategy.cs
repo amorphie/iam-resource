@@ -6,7 +6,6 @@ internal sealed class DenyOverridesStrategy : IConflictResolutionStrategy
     {
         var result = new EvaluationResult();
         
-        // Eğer herhangi bir deny varsa, deny uygulanır
         var denyPolicy = evaluationResults.FirstOrDefault(r => !r.IsAllowed);
         if (denyPolicy != null)
         {

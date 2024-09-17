@@ -8,6 +8,7 @@ public class ConflictResolution : IEquatable<ConflictResolution>
     public static readonly ConflictResolution DenyOverrides = new ConflictResolution("D", "deny-overrides");
     public static readonly ConflictResolution AllowOverrides = new ConflictResolution("A", "allow-overrides");
     public static readonly ConflictResolution FirstApplicable = new ConflictResolution("F", "first-applicable");
+    public static readonly ConflictResolution HighestPriority = new ConflictResolution("H", "highest-priority");
 
     public string Code { get; }
     public string Description { get; }
@@ -28,6 +29,7 @@ public class ConflictResolution : IEquatable<ConflictResolution>
             "D" => DenyOverrides,
             "A" => AllowOverrides,
             "F" => FirstApplicable,
+            "H" => HighestPriority,
             _ => NA
         };
     }

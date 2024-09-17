@@ -34,4 +34,23 @@ public class TestData
     public Guid ClientId_3 { get; } = Guid.Parse("ce5a92eb-2ea7-483e-892b-6af387255dde");
     public Guid ClientId_4 { get; } = Guid.Parse("115aabaf-129d-466f-a76f-7cf4980c9bc8");
     public Guid ClientId_5 { get; } = Guid.Parse("fde7f372-c2c7-4ce6-a581-9be3efa1ff59");
+
+    public string ApplicationId { get; } = "Burgan";
+    public string ClientId { get; } = "burgan_mobile";
+    public Guid PermissionId_1 { get; } = Guid.Parse("182e8a60-10e1-4b37-b67a-d8e8c3913471");
+    public Guid PermissionId_2 { get; } = Guid.Parse("4a009d33-178e-4061-801e-cbb91d715737");
+    public Guid PermissionId_3 { get; } = Guid.Parse("f7ad3e63-9f60-4d62-bde4-12bcbf33e993");
+    public Guid PermissionId_4 { get; } = Guid.Parse("d56d7413-b83a-49bc-941f-fa27fdfe3518");
+    public Guid PermissionId_5 { get; } = Guid.Parse("768b0e37-55b2-47c3-975f-f0b9deee213c");
+    public Guid PermissionId_6 { get; } = Guid.Parse("c74c1bc3-a814-42cd-8b69-e695addb7e62");
+
+    public string PermissionName_1 { get; } = "Identities";
+    public string PermissionName_2 { get; } = "Identities.Users";
+    public string PermissionName_3 { get; } = "Identities.Users.Create";
+    public string PermissionName_4 { get; } = "Identities.Users.Update";
+    public string PermissionName_5 { get; } = "Identities.Users.Roles";
+    public string PermissionName_6 { get; } = "Identities.Users.Roles.Assign";
+
+    public string ProviderName { get; } = "U";
+    public string ProviderKey { get; } = "c74c1bc3-a814-42cd-8b69-e695addb7e62";
 }

@@ -1,5 +1,6 @@
 using BBT.Prism.EntityFrameworkCore.Modeling;
 using BBT.Resource.EntityFrameworkCore.ValueConverters;
+using BBT.Resource.Permissions;
 using BBT.Resource.Policies;
 using BBT.Resource.Privileges;
 using BBT.Resource.Resources;
@@ -112,7 +113,7 @@ public static class ResourceDbContextModelCreatingExtensions
             b.ConfigureByConvention();
 
             b.HasKey(k => new { k.ResourceId, k.PolicyId });
-            
+
             b.Property(p => p.Status)
                 .IsRequired()
                 .HasMaxLength(SharedConsts.MaxStatusLength)
@@ -354,6 +355,8 @@ public static class ResourceDbContextModelCreatingExtensions
             b.Property(p => p.ParentId);
             b.Property(p => p.Priority);
             b.Property(p => p.Permissions);
+            b.Property(p => p.PermissionProvider)
+                .HasMaxLength(PolicyConsts.MaxProviderNameLength);
             b.Property(p => p.EvaluationOrder);
 
             b.Property(p => p.Effect)
@@ -384,6 +387,7 @@ public static class ResourceDbContextModelCreatingExtensions
                     time.Property(t => t.End)
                         .HasColumnName("EndTime");
                     time.Property(t => t.Timezone)
+                        .HasColumnName("Timezone")
                         .HasMaxLength(PolicyConsts.MaxTimezoneLength);
                 });
 
@@ -396,6 +400,86 @@ public static class ResourceDbContextModelCreatingExtensions
                     .HasConversion(new ObjectDictionaryConverter())
                     .HasColumnType("jsonb");
             });
+        });
+
+        #endregion
+
+        #region Permissions
+
+        builder.Entity<Permission>(b =>
+        {
+            b.ToTable("Permissions");
+            b.ConfigureByConvention();
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxNameLength);
+
+            b.Property(p => p.ApplicationId)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxApplicationIdLength);
+
+            b.Property(p => p.ClientId)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxClientIdLength);
+
+            b.HasMany(p => p.Translations)
+                .WithOne()
+                .HasForeignKey(p => p.PermissionId);
+        });
+
+        builder.Entity<PermissionTranslation>(b =>
+        {
+            b.ToTable("PermissionTranslations");
+            b.ConfigureByConvention();
+
+            b.HasKey(k => new { k.Language, k.PermissionId });
+
+            b.Property(p => p.Language)
+                .IsRequired()
+                .HasMaxLength(SharedConsts.MaxLanguageLength);
+
+            b.Property(p => p.DisplayName)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxDisplayNameLength);
+
+            b.Property(p => p.Description)
+                .HasMaxLength(PermissionsConsts.MaxDescriptionLength);
+        });
+
+        builder.Entity<PermissionGrant>(b =>
+        {
+            b.ToTable("PermissionGrants");
+            b.ConfigureByConvention();
+
+            b.HasIndex(i => new
+            {
+                i.ApplicationId,
+                i.ClientId,
+                i.Name,
+                i.ProviderName,
+                i.ProviderKey
+            }).IsUnique();
+
+            b.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxNameLength);
+
+            b.Property(p => p.ClientId)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxClientIdLength);
+
+            b.Property(p => p.ApplicationId)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxApplicationIdLength);
+
+            b.Property(p => p.ProviderKey)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxProviderKeyLength);
+
+            b.Property(p => p.ProviderName)
+                .IsRequired()
+                .HasMaxLength(PermissionsConsts.MaxProviderNameLength);
         });
 
         #endregion

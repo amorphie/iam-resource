@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>BBT.Resource</RootNamespace>
+        <DefineConstants>DEBUG;TEST</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
